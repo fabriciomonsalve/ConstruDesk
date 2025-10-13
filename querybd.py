@@ -1,29 +1,18 @@
 from app import create_app, db
-from app.models import Project
+from sqlalchemy import text
 
-def delete_all_projects():
-    """Elimina todos los proyectos de la base de datos."""
+def drop_tables():
+    """Elimina las tablas tasks y schedules de la base de datos."""
     # Crear la app
     app = create_app()
 
     # Crear el contexto de la app para interactuar con la base de datos
     with app.app_context():
-        # Obtener todos los proyectos
-        projects = Project.query.all()
+        # Eliminar las tablas directamente usando la sesión de base de datos y envolviendo el SQL en text()
+        db.session.execute(text('DROP TABLE IF EXISTS tasks'))      # Eliminar la tabla tasks
+        db.session.commit()  # Confirmar los cambios
 
-        # Verificar si hay proyectos para eliminar
-        if not projects:
-            print("No hay proyectos para eliminar.")
-            return
-        
-        # Eliminar todos los proyectos
-        for project in projects:
-            db.session.delete(project)
-            print(f"✅ Proyecto eliminado: {project.name}")
-
-        # Confirmar los cambios en la base de datos
-        db.session.commit()
-        print("🎉 Todos los proyectos han sido eliminados.")
+        print("🎉 Las tablas 'tasks' y 'schedules' han sido eliminadas.")
 
 if __name__ == "__main__":
-    delete_all_projects()
+    drop_tables()

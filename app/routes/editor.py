@@ -1,9 +1,11 @@
+from asyncio import Task
+from datetime import datetime
 import os
 from flask import Blueprint, app, current_app, flash, redirect, render_template, send_from_directory, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from app import db
-from app.models import AdminUser, Project, ProjectDocument, ProjectUserRole
+from app.models import AdminUser, Project, ProjectDocument, ProjectTask, ProjectUserRole
 from flask import request
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dwg', 'dxf', 'zip'}
@@ -142,3 +144,86 @@ def download_document(project_id, document_id):
         os.path.join(current_app.root_path, 'static', 'uploads'), filename, as_attachment=True
     )
 
+
+
+
+
+
+@editor_bp.route('/project/<int:project_id>/tasks')
+@login_required
+def view_tasks(project_id):
+    project = Project.query.get_or_404(project_id)
+
+    # Obtener las tareas del proyecto
+    tasks = ProjectTask.query.filter_by(project_id=project.id).all()
+
+    return render_template('editor/view_tasks.html', project=project, tasks=tasks)
+
+
+@editor_bp.route('/project/<int:project_id>/create_task', methods=['GET', 'POST'])
+@login_required
+def create_task(project_id):
+    project = Project.query.get_or_404(project_id)
+
+    # Obtener los usuarios asignados al proyecto
+    users_in_project = AdminUser.query.join(ProjectUserRole).filter(ProjectUserRole.project_id == project_id).all()
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        start_date = request.form.get('start_date')  # Recibimos la fecha como string
+        end_date = request.form.get('end_date')  # Recibimos la fecha como string
+        responsible_user_id = request.form.get('responsible_user')  # Obtener el responsable
+        status = request.form.get('status', 'pendiente')  # Obtener el estado seleccionado, 'pendiente' por defecto
+
+        # Convertir las fechas a objetos datetime
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')  # Convertir la fecha de inicio
+        end_date = datetime.strptime(end_date, '%Y-%m-%d') if end_date else None  # Convertir la fecha de fin (puede ser None)
+
+        # Crear la nueva tarea
+        new_task = ProjectTask(
+            name=name,
+            description=description,
+            start_date=start_date,
+            end_date=end_date,
+            status=status,  # Asignar el estado seleccionado
+            project_id=project.id,
+            responsible_user_id=responsible_user_id  # Asignar responsable si existe
+        )
+
+        db.session.add(new_task)
+        db.session.commit()
+
+        flash('Tarea creada exitosamente', 'success')
+        return redirect(url_for('editor.view_tasks', project_id=project.id))  # Redirigir a la lista de tareas
+
+    return render_template('editor/create_task.html', project=project, users_in_project=users_in_project)
+
+
+
+
+@editor_bp.route('/project/<int:project_id>/task/<int:task_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_task(project_id, task_id):
+    task = ProjectTask.query.get_or_404(task_id)
+
+    # Obtener los usuarios asignados al proyecto
+    users_in_project = AdminUser.query.join(ProjectUserRole).filter(ProjectUserRole.project_id == project_id).all()
+
+    if request.method == 'POST':
+        task.name = request.form.get('name')
+        task.description = request.form.get('description')
+
+        # Convertir las fechas a objetos datetime
+        task.start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%d')  # Fecha de inicio
+        task.end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%d') if request.form.get('end_date') else None  # Fecha de fin
+
+        task.status = request.form.get('status')
+        task.responsible_user_id = request.form.get('responsible_user')  # Actualizar el responsable
+
+        db.session.commit()
+
+        flash('Tarea actualizada correctamente.', 'success')
+        return redirect(url_for('editor.view_tasks', project_id=project_id))
+
+    return render_template('editor/edit_task.html', task=task, users_in_project=users_in_project)

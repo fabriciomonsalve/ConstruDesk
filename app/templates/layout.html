@@ -17,7 +17,6 @@
   body {
     font-family: 'Inter', sans-serif !important; 
     background: #0f172a !important; /* Fondo oscuro global */
-    color: #e2e8f0 !important; /* Texto claro global */
   }
 
   .btn {
@@ -93,7 +92,7 @@
 
   <!-- Panel de navegación bajo el header (visible solo si el usuario está autenticado) -->
   {% if current_user.is_authenticated %}
-    <nav class="bg-slate-800 py-3 px-6">
+    <nav class="bg-slate-800 py-3 px-6 text-white">
       <ul class="flex space-x-4">
         {% if current_user.has_role('admin') %}
           <li><a href="{{ url_for('admin.admin_dashboard') }}" class="text-gray hover:text-blue-400">Admin Dashboard</a></li>

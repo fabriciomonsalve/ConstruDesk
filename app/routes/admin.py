@@ -10,7 +10,9 @@ from flask import request
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # Ruta de inicio para el admin
+
 @admin_bp.route('/')
+@login_required
 def admin_dashboard():
     return render_template('admin/inicio.html')
 
@@ -110,6 +112,7 @@ def create_project():
         flash('Proyecto creado exitosamente.', 'success')
         return redirect(url_for('admin.list_projects'))
     return render_template('admin/crear_proyecto.html', form=form)
+
 
 # Ruta para listar los proyectos
 @admin_bp.route('/list')

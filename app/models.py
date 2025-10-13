@@ -145,6 +145,27 @@ class ProjectDocument(db.Model):
 
     def __repr__(self):
         return f"<ProjectDocument(project_id={self.project_id}, file_name={self.file_name}, version={self.version})>"
+    
+
+class ProjectTask(db.Model):
+    __tablename__ = 'project_tasks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)  # Nombre de la tarea
+    description = db.Column(db.Text, nullable=True)  # Descripción de la tarea
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)  # Fecha de inicio
+    end_date = db.Column(db.DateTime, nullable=True)  # Fecha de finalización
+    status = db.Column(db.String(50), default='pendiente')  # Estado de la tarea ('pendiente', 'en progreso', 'completada')
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)  # Relación con el proyecto
+    project = db.relationship('Project', backref=db.backref('tasks', lazy=True))  # Relación con el proyecto
+
+    # Relación con el responsable (usuario)
+    responsible_user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=True)  # Relación con el responsable
+    responsible_user = db.relationship('AdminUser', backref=db.backref('tasks', lazy=True))  # Relación con el usuario responsable
+
+    def __repr__(self):
+        return f"<ProjectTask {self.name}, {self.status}>"
+
 
 
 

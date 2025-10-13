@@ -6,7 +6,7 @@
 <section class="container mx-auto px-4 py-12">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 relative">
-    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2 text-white">
       🧑‍💻 Gestión de usuarios
     </h2>
     <a href="{{ url_for('admin.crear_usuario') }}" class="absolute top-1/2 transform -translate-y-1/2 right-0 mr-6 bg-red-600 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500 active:bg-red-800 transition-all duration-300 ease-in-out">
@@ -17,7 +17,7 @@
   <div class="grid sm:grid-cols-3 gap-6 mb-10">
     <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
       <p class="text-slate-400 text-sm">Total usuarios</p>
-      <p class="text-3xl font-black text-[var(--brand-2)]">{{ usuarios|length }}</p>
+      <p class="text-3xl font-black text-[var(--brand-2)] text-white">{{ usuarios|length }}</p>
     </div>  
   </div>
 
