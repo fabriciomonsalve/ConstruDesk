@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  
+  <!-- SEO -->
+  <title>{{ config.STORE_NAME or 'Kodesk' }} – Consultoría TI en Parral · Soporte · Data Analytics & Innovación</title>
+  <meta name="description" content="Kodesk.cl: primera consultora informática integral en Parral y Región del Maule. Servicios en arquitectura TI, nube, ciberseguridad, desarrollo, data & BI, innovación y soporte gestionado." />
+  <meta name="keywords" content="Consultoría TI, Parral, Maule, ciberseguridad, nube, desarrollo, Power BI, automatización, soporte TI, innovación" />
+  <meta name="author" content="Kodesk.cl" />
+  
+  <!-- Open Graph (previsualización en redes sociales y WhatsApp) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kodesk.cl">
+  <meta property="og:url" content="https://kodesk.cl">
+  <meta property="og:title" content="Kodesk.cl – Consultoría TI en Parral">
+  <meta property="og:description" content="Modernizamos empresas con arquitectura TI, nube, ciberseguridad, data analytics, IA y soporte local.">
+  <meta property="og:image" content="https://kodesk.cl/static/kodesk.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='kodesk.png') }}">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- AOS (Animate On Scroll) -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+  <!-- Instagram embeds -->
+  <script async src="//www.instagram.com/embed.js"></script>
+
+  <!-- Estilos -->
+  <style>
+    :root { --brand:#0A3D62; --brand-2:#3C9DD0; }
+    .container { max-width: 1200px; }
+
+    /* === Hero responsive fix === */
+    .clip-hero { clip-path: none; }
+    @media (min-width: 768px) {
+      .clip-hero {
+        clip-path: polygon(0 0, 100% 0, 100% 86%, 0 100%);
+      }
+    }
+
+    .btn { display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.1rem; border-radius:.75rem; font-weight:600; transition:all .3s ease; }
+    .btn-primary { background:var(--brand); color:#fff; }
+    .btn-primary:hover { background:#08324f; transform:scale(1.05); }
+    .btn-ghost { background:#0b1220; border:1px solid #1f2a44; color:#cbd5e1; }
+    .btn-ghost:hover { background:#0f172a; transform:scale(1.05); }
+    .badge { font-size:.65rem; letter-spacing:.06em; text-transform:uppercase; padding:.25rem .5rem; border-radius:999px; border:1px solid #1f2a44; color:#cbd5e1; background:#0b1220; }
+    .card { background:#0b1220; border:1px solid #1f2a44; border-radius:1rem; overflow:hidden; transition:transform .4s ease, box-shadow .4s ease; }
+    .card:hover { transform:translateY(-8px) scale(1.02); box-shadow:0 20px 40px rgba(0,0,0,.35); }
+    .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .logo-tile { background:#0b1220; border:1px solid #1f2a44; border-radius:.75rem; display:flex; align-items:center; justify-content:center; padding:1rem; height:74px; transition:transform .3s ease; }
+    .logo-tile:hover { transform:scale(1.1) rotate(2deg); }
+    .section-title { @apply text-2xl md:text-3xl font-black; }
+  </style>
+
+  <!-- Schema Markup (SEO local business) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Kodesk",
+    "image": "https://kodesk.cl/static/kodesk.png",
+    "url": "https://kodesk.cl",
+    "telephone": "+56982232855",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Parral",
+      "addressRegion": "Región del Maule",
+      "addressCountry": "Chile"
+    },
+    "priceRange": "$$",
+    "sameAs": ["https://linkedin.com/company/kodesk"]
+  }
+  </script>
+</head>
+
+<body class="bg-slate-950 text-slate-100 antialiased">
+
+  <!-- Header -->
+  <header class="w-full border-b border-slate-800/70 sticky top-0 z-50 bg-slate-950/80 backdrop-blur">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="{{ url_for('main.index') }}" class="flex items-center gap-3">
+        <img src="{{ url_for('static', filename='kodesk.png') }}" class="h-9 w-9 rounded-md" alt="Kodesk logo">
+        <div class="text-xl font-semibold">Kodesk<span class="text-slate-400">.cl</span></div>
+
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-slate-300">
+        <a href="{{ url_for('main.servicios') }}" class="hover:text-white">Nuestas Plataformas</a>
+        <a href="#plataformas" class="hover:text-white">Plataformas</a>
+        <a href="#servicios" class="hover:text-white">Servicios</a>
+        
+        <a href="#contacto" class="hover:text-white">Contacto</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-3">
+        <a class="btn btn-primary" target="_blank" rel="noopener"
+           href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Hola Kodesk 👋, quiero una asesoría para mi empresa.'|urlencode }}">
+          Agenda por WhatsApp
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="menuBtn" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-slate-700">
+        <span class="sr-only">Abrir menú</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden border-t border-slate-800/70 bg-slate-950/95">
+      <div class="container mx-auto px-4 py-3 grid gap-2 text-slate-300">
+        <a href="{{ url_for('main.servicios') }}" class="hover:text-white">Nuestas Plataformas</a>
+        <a href="{{ url_for('main.servicios') }}" class="px-2 py-2 rounded-lg hover:bg-slate-900">Plataformas</a>
+        <a href="#plataformas" class="px-2 py-2 rounded-lg hover:bg-slate-900">Plataformas</a>
+        <a href="#servicios" class="px-2 py-2 rounded-lg hover:bg-slate-900">Servicios</a>
+        <a href="#clientes" class="px-2 py-2 rounded-lg hover:bg-slate-900">Clientes</a>
+        <a href="#contacto" class="px-2 py-2 rounded-lg hover:bg-slate-900">Contacto</a>
+        <a class="btn btn-primary mt-2 w-max" target="_blank" rel="noopener"
+           href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Hola Kodesk 👋, quiero una asesoría para mi empresa.'|urlencode }}">Agenda por WhatsApp</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  
+<section class="relative clip-hero">
+    <div class="absolute inset-0 bg-gradient-to-br from-[var(--brand)]/40 via-blue-900/20 to-[var(--brand-2)]/20"></div>
+    <div class="container mx-auto px-4 py-12 md:py-20 relative">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <span class="badge">Consultoría TI · Parral · Región del Maule</span>
+          <h1 class="text-4xl md:text-5xl font-black mt-3 leading-tight">
+             Modernizamos empresas<br><span class="text-[var(--brand-2)]">con nuevas tecnologias.</span>
+          </h1>
+          <p class="text-slate-300 mt-4 max-w-xl">
+           Desde Parral ayudamos a pymes y empresas de la Región del Maule a digitalizarse, protegerse y crecer con soluciones TI de clase mundial.
+          </p>
+          <div class="mt-6 flex items-center gap-3">
+            <a href="#servicios" class="btn btn-primary">Ver servicios</a>
+            <a class="btn btn-ghost" target="_blank" rel="noopener"
+               href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Quiero una evaluación de arquitectura y propuestas de mejora.'|urlencode }}">
+              Solicitar diagnóstico
+            </a>
+          </div>
+          <div class="mt-6 flex flex-wrap items-center gap-6 text-slate-400 text-sm">
+            <div>🛡️ Seguridad & cumplimiento</div>
+            <div>☁️ Cloud-first (AWS · Azure · GWS/M365)</div>
+            <div>📊 BI & automatización</div>
+          </div>
+        </div>
+
+        <!-- visual hero tipo “dashboard/arquitectura” -->
+        <!-- visual hero tipo “dashboard/arquitectura” -->
+<div class="relative">
+  <div class="aspect-[4/3] rounded-2xl card shadow-soft overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950"></div>
+    <div class="absolute inset-0 grid grid-cols-3 gap-4 p-4">
+      
+      <!-- agrodesk -->
+      <a href="https://agrodesk.cl/" target="_blank" rel="noopener"
+        class="rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center p-4">
+        <img src="{{ url_for('static', filename='logos/agrodesk.png') }}" 
+            alt="Agrodesk" 
+            class="max-h-full max-w-full object-contain opacity-90">
+      </a>
+
+
+      <!-- leucodeops -->
+      <a href="https://www.cordinaap.xyz" target="_blank" rel="noopener"
+         class="rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='logos/vet.png') }}" alt="Microsoft 365" class="max-h-full max-w-full object-contain opacity-90">
+      </a>
+
+      <!-- Indep Salud -->
+      <a href="https://cloud.google.com/" target="_blank" rel="noopener"
+         class="rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='logos/indepsalud.png') }}" alt="Google Cloud" class="max-h-full max-w-full object-contain opacity-90">
+      </a>
+
+      <!-- ProjecTraker -->
+      <a href="https://www.cisco.com/c/es_mx/index.html" target="_blank" rel="noopener"
+         class="rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='logos/ptraker.png') }}" alt="Cisco" class="max-h-full max-w-full object-contain opacity-90">
+      </a>
+
+      <!-- Fortinet -->
+      <a href="https://www.fortinet.com/lat" target="_blank" rel="noopener"
+         class="rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='logos/kodesk.png') }}" alt="Fortinet" class="max-h-full max-w-full object-contain opacity-90">
+      </a>
+
+      <!-- VMware -->
+      <a href="https://www.vmware.com/latam.html" target="_blank" rel="noopener"
+         class="rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='logos/leucodeops.png') }}" alt="VetTraker" class="max-h-full max-w-full object-contain opacity-90">
+      </a>
+
+    </div>
+    <div class="absolute bottom-4 right-4">
+      <span class="badge">Nuestras Plataformas creadas</span>
+    </div>
+  </div>
+</div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+<section id="plataformas" class="container mx-auto px-4 py-12">
+  <div class="flex items-end justify-between">
+    <h2 class="section-title">Plataformas que implementamos</h2>
+    <a href="#contacto" class="text-sm text-[var(--brand-2)] hover:underline">Solicitar integración</a>
+  </div>
+
+
+
+
+
+
+  
+
+
+  <h3 class="text-lg font-semibold mt-10 mb-4 text-slate-200">Desarrollo & Software a medida.</h3>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+    <!-- WordPress -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20.5c4.694 0 8.5-3.806 8.5-8.5s-3.806-8.5-8.5-8.5-8.5 3.806-8.5 8.5 3.806 8.5 8.5 8.5z" />
+      </svg>
+      <span class="text-xs text-slate-400">WordPress</span>
+    </div>
+
+    <!-- WooCommerce -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <rect x="4" y="4" width="16" height="16" rx="2" />
+      </svg>
+      <span class="text-xs text-slate-400">WooCommerce</span>
+    </div>
+
+    <!-- Shopify -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path d="M3 7l9-4 9 4v10l-9 4-9-4V7z" />
+      </svg>
+      <span class="text-xs text-slate-400">Shopify</span>
+    </div>
+
+    <!-- Odoo -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <circle cx="12" cy="12" r="9" />
+      </svg>
+      <span class="text-xs text-slate-400">Odoo</span>
+    </div>
+
+    <!-- Python -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path d="M12 2c2.5 0 4.5 2 4.5 4.5v1h-5v2h7c.6 0 1 .4 1 1v5c0 2.5-2 4.5-4.5 4.5h-6C6 20 4 18 4 15.5V14h5v-2H2V7c0-2.5 2-4.5 4.5-4.5h5.5z"/>
+      </svg>
+      <span class="text-xs text-slate-400">Python</span>
+    </div>
+
+    <!-- React -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <circle cx="12" cy="12" r="2" />
+        <ellipse cx="12" cy="12" rx="11" ry="4.5" />
+        <ellipse cx="12" cy="12" rx="4.5" ry="11" transform="rotate(60 12 12)" />
+        <ellipse cx="12" cy="12" rx="4.5" ry="11" transform="rotate(120 12 12)" />
+      </svg>
+      <span class="text-xs text-slate-400">React</span>
+    </div>
+  </div>
+
+  <p class="text-slate-400 text-sm mt-4">
+    *Integramos soluciones de infraestructura, seguridad, desarrollo web, ERP/CRM y BI según necesidad de cada empresa.
+  </p>
+
+  
+</section>
+
+<!-- Servicios clave -->
+<section id="servicios" class="bg-slate-900/40">
+  <div class="container mx-auto px-4 py-12">
+    <div class="flex items-end justify-between mb-8">
+      <h2 class="section-title">Servicios clave</h2>
+      <a href="#contacto" class="hidden md:inline-flex text-[var(--brand-2)] hover:underline">Cotiza un proyecto →</a>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Soporte Técnico -->
+      <article class="card p-6 shadow-soft">
+        <h3 class="text-xl font-bold">Soporte Técnico Informático</h3>
+        <p class="text-slate-400 mt-2">Soporte local en Parral y remoto para toda la Región del Maule. Atendemos desde incidencias básicas hasta proyectos críticos.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Nivel 1, 2 y 3</li>
+          <li>Mantenimiento preventivo</li>
+          <li>Helpdesk y monitoreo remoto</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost mt-4">Solicitar soporte</a>
+      </article>
+
+      <!-- Arquitectura & Modernización -->
+      <article class="card p-6 shadow-soft">
+        <h3 class="text-xl font-bold">Arquitectura & Modernización</h3>
+        <p class="text-slate-400 mt-2">Evaluaciones de arquitectura, roadmap de modernización y adopción cloud.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Assessment de infraestructura</li>
+          <li>Cloud readiness (AWS, Azure, GCP)</li>
+          <li>Alta disponibilidad & DR</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost mt-4">Solicitar diagnóstico</a>
+      </article>
+
+      <!-- Desarrollo a medida -->
+      <article class="card p-6 shadow-soft">
+        <h3 class="text-xl font-bold">Desarrollo & Integraciones</h3>
+        <p class="text-slate-400 mt-2">Soluciones de software a medida y automatización de procesos para modernizar tu empresa.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Sitios web y e-commerce (Shopify/Woo)</li>
+          <li>Integración ERP/CRM</li>
+          <li>Automatización con RPA y APIs</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost mt-4">Hablar con un experto</a>
+      </article>
+
+      <!-- Business Intelligence -->
+      <article class="card p-6 shadow-soft lg:col-span-2">
+        <h3 class="text-xl font-bold">Data, BI & Business Intelligence</h3>
+        <p class="text-slate-400 mt-2">Convertimos tus datos en decisiones inteligentes. Dashboards, analítica avanzada e IA aplicada al negocio.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Power BI / Looker / Metabase</li>
+          <li>ETL, modelado y calidad de datos</li>
+          <li>Predicciones y asistentes IA</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost mt-4">Ver demo de BI</a>
+      </article>
+
+      <!-- Redes & Ciberseguridad -->
+      <article class="card p-6 shadow-soft">
+        <h3 class="text-xl font-bold">Redes & Ciberseguridad</h3>
+        <p class="text-slate-400 mt-2">Diseño de redes seguras, firewalls, VPN y auditorías.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Fortinet / Cisco / Ubiquiti</li>
+          <li>Políticas de acceso & MFA</li>
+          <li>Concienciación y monitoreo</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost mt-4">Pedir propuesta</a>
+      </article>
+
+      <!-- Nube & Virtualización -->
+      <article class="card p-6 shadow-soft">
+        <h3 class="text-xl font-bold">Nube & Virtualización</h3>
+        <p class="text-slate-400 mt-2">Migraciones a Google Workspace, Microsoft 365 y servidores virtualizados.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Migraciones cloud</li>
+          <li>Backups y continuidad</li>
+          <li>VMware / Proxmox</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost mt-4">Agendar migración</a>
+      </article>
+
+      <!-- Venta e Insumos TI -->
+      <article class="card p-6 shadow-soft">
+        <h3 class="text-xl font-bold">Venta e Insumos TI</h3>
+        <p class="text-slate-400 mt-2">Equipos, licencias y servidores con asesoría y soporte local.</p>
+        <ul class="text-sm text-slate-400 mt-3 space-y-1 list-disc list-inside">
+          <li>Notebooks, routers, switches</li>
+          <li>Licencias Windows/Office/AV</li>
+          <li>Servidores & almacenamiento</li>
+        </ul>
+        <a href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Quiero cotizar insumos TI (equipos/licencias).'|urlencode }}" target="_blank" rel="noopener" class="btn btn-ghost mt-4">Cotizar por WhatsApp</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+  <!-- Métricas & confianza -->
+ <!-- Métricas & confianza — Versión PRO -->
+<section class="relative">
+  <div class="absolute inset-0 bg-gradient-to-b from-slate-900/0 via-slate-900/20 to-slate-900/0 pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 py-14 relative">
+    <div class="mb-8 text-center">
+      <span class="inline-flex items-center gap-2 text-xs tracking-wider uppercase bg-[var(--brand)]/10 text-[var(--brand-2)] px-3 py-1 rounded-full ring-1 ring-[var(--brand-2)]/30">
+        Confianza & Resultados
+      </span>
+      <h3 class="mt-3 text-2xl md:text-3xl font-extrabold">Impacto medible en nuestros clientes</h3>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-6">
+      <!-- Card -->
+      <div class="card p-6 shadow-soft ring-1 ring-slate-800/70 text-center">
+        <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand)]/20">
+          <!-- icon projects -->
+          <svg class="h-5 w-5 text-[var(--brand-2)]" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="text-4xl font-black text-[var(--brand-2)] leading-none">
+          <span class="counter" data-target="20" data-prefix="+">0</span>
+        </div>
+        <p class="text-slate-400 text-sm mt-2">Proyectos implementados</p>
+      </div>
+
+      <!-- Card -->
+      <div class="card p-6 shadow-soft ring-1 ring-slate-800/70 text-center">
+        <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand)]/20">
+          <!-- icon experience -->
+          <svg class="h-5 w-5 text-[var(--brand-2)]" viewBox="0 0 24 24" fill="none">
+            <path d="M8 7h8M6 12h12M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="text-4xl font-black text-[var(--brand-2)] leading-none">
+          <span class="counter" data-target="4" data-prefix="+">0</span>
+        </div>
+        <p class="text-slate-400 text-sm mt-2">Años de experiencia</p>
+      </div>
+
+      <!-- Card -->
+      <div class="card p-6 shadow-soft ring-1 ring-slate-800/70 text-center">
+        <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand)]/20">
+          <!-- icon uptime -->
+          <svg class="h-5 w-5 text-[var(--brand-2)]" viewBox="0 0 24 24" fill="none">
+            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="text-4xl font-black text-[var(--brand-2)] leading-none">
+          <span class="counter" data-target="99.9" data-suffix="%" data-decimals="1">0</span>
+        </div>
+        <p class="text-slate-400 text-sm mt-2">Uptime en servicios críticos</p>
+      </div>
+    </div>
+
+    <!-- Microcopy confianza -->
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-400">
+      <span>🛡️ SLA y soporte local</span>
+      <span>☁️ Arquitecturas Cloud-first</span>
+      <span>🔍 Auditorías y buenas prácticas</span>
+    </div>
+  </div>
+</section>
+
+<!-- Animación de conteo (JS ligero) -->
+<script>
+  (function () {
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.target || '0');
+      const decimals = parseInt(el.dataset.decimals || '0', 10);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 1200; // ms
+      let start = null;
+
+      function step(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        const val = easeOut(p) * target;
+        el.textContent = prefix + val.toFixed(decimals) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // Observa cuando la sección entra al viewport
+    const counters = document.querySelectorAll('.counter');
+    if (counters.length) {
+      const once = { root: null, threshold: 0.25 };
+      const obs = new IntersectionObserver((entries, io) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            animateCounter(e.target);
+            io.unobserve(e.target);
+          }
+        });
+      }, once);
+      counters.forEach(c => obs.observe(c));
+    }
+  })();
+</script>
+
+<section id="plataformas" class="container mx-auto px-4 py-12">
+  <div class="flex items-end justify-between">
+    <h2 class="section-title">Plataformas que implementamos</h2>
+    <a href="#contacto" class="text-sm text-[var(--brand-2)] hover:underline">Solicitar integración</a>
+  </div>
+
+
+  <!-- Infraestructura & Cloud -->
+  <h3 class="text-lg font-semibold mt-8 mb-4 text-slate-200">NUESTRAS PLATAFORMAS</h3>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+    <!-- AWS -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 018 0h4a4 4 0 110 8H7a4 4 0 01-4-4z" />
+      </svg>
+      <span class="text-xs text-slate-400">Project Traker</span>
+    </div>
+
+    <!-- Azure -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m9-9H3" />
+      </svg>
+      <span class="text-xs text-slate-400">AgroDESK</span>
+    </div>
+
+    <!-- Google Cloud -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 17a4 4 0 00-3-3.87V9a7 7 0 10-14 0v4a4 4 0 00-3 3.87V21h20v-4z" />
+      </svg>
+      <span class="text-xs text-slate-400">IndepWork</span>
+    </div>
+
+    <!-- Microsoft 365 -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <rect x="3" y="4" width="7" height="16" rx="1" />
+        <rect x="14" y="4" width="7" height="16" rx="1" />
+      </svg>
+      <span class="text-xs text-slate-400">VetTRAKER</span>
+    </div>
+
+    <!-- Fortinet -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12l9 5-9 5-9-5 9-5z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12l9-5-9-5-9 5 9 5z" />
+      </svg>
+      <span class="text-xs text-slate-400">MentorCLASS</span>
+    </div>
+
+    <!-- Ubiquiti -->
+    <div class="logo-tile flex flex-col items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[var(--brand-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <circle cx="12" cy="12" r="10" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h8" />
+      </svg>
+      <span class="text-xs text-slate-400">INDEP SALUD</span>
+    </div>
+  </div>
+</section>
+
+ 
+
+<!-- CTA PRO ORIENTADO A KODESK -->
+<section class="relative overflow-hidden">
+  <!-- Fondo degradado + acentos -->
+  <div class="absolute inset-0 bg-gradient-to-r from-[var(--brand)] via-[#0c4f78] to-[var(--brand-2)]"></div>
+  <div class="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-white/10 blur-3xl"></div>
+  <div class="absolute -bottom-24 -left-16 w-72 h-72 rounded-full bg-cyan-200/10 blur-3xl"></div>
+
+  <div class="relative container mx-auto px-4 py-16 md:py-20">
+    <div class="grid md:grid-cols-12 gap-8 items-center">
+
+      <!-- Texto -->
+      <div class="md:col-span-7 text-white">
+        <span class="inline-flex items-center gap-2 text-xs tracking-wider uppercase bg-white/10 px-3 py-1 rounded-full ring-1 ring-white/20">
+          🚀 Kodesk · Modernización TI · Innovación Digital
+        </span>
+        <h2 class="mt-4 text-3xl md:text-4xl font-extrabold leading-tight">
+          Transforma tu empresa con <span class="text-white/90 underline decoration-white/40">soluciones tecnológicas</span>
+        </h2>
+        <p class="mt-3 text-white/90 max-w-2xl">
+          Desde Parral apoyamos a PYMEs y empresas de la Región del Maule-Ñuble en 
+          <strong>innovación, sofware a medida, análisis de datos y soporte TI</strong>.  
+          Agenda una sesión inicial gratuita y descubre cómo optimizar tu infraestructura y procesos.
+        </p>
+
+        <!-- Bullets de valor -->
+        <ul class="mt-5 grid sm:grid-cols-3 gap-3 text-sm text-white/90">
+          <li class="flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full bg-white/80"></span> Auditoría TI completa</li>
+          <li class="flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full bg-white/80"></span> Innovación Continua</li>
+          <li class="flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full bg-white/80"></span> Asistentes IAs y Análisis de datos.</li>
+        </ul>
+
+        <!-- CTAs -->
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <a href="https://wa.me/56920576206?text=Hola%20Kodesk%20%F0%9F%91%8B%2C%20quiero%20una%20evaluaci%C3%B3n%20TI."
+             target="_blank" rel="noopener"
+             class="inline-flex items-center rounded-xl bg-white px-6 py-3 font-semibold text-[var(--brand)] shadow-soft hover:opacity-90">
+            💬 Agenda por WhatsApp
+          </a>
+
+          <a href="#contacto"
+             class="inline-flex items-center rounded-xl bg-white/10 px-6 py-3 font-semibold text-white ring-1 ring-white/30 hover:bg-white/15">
+            Solicitar diagnóstico TI
+          </a>
+        </div>
+
+        <!-- Confianza -->
+        <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-white/80">
+          <span class="inline-flex items-center gap-2">🛡️ Seguridad & Continuidad</span>
+          <span class="inline-flex items-center gap-2">☁️ Plataformas en la nube</span>
+          <span class="inline-flex items-center gap-2">📊 BI, IA & Automatización</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta lateral con “beneficios” -->
+      <div class="md:col-span-5">
+        <div class="rounded-2xl bg-white/10 backdrop-blur shadow-soft ring-1 ring-white/20 p-6">
+          <h3 class="text-white font-bold text-lg">Qué incluye tu sesión inicial</h3>
+          <ul class="mt-3 space-y-2 text-white/90 text-sm">
+            <li class="flex items-start gap-3">
+              <span class="mt-1 inline-block w-2.5 h-2.5 rounded-full bg-white/80"></span>
+              30–45 min con un arquitecto TI de Kodesk
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1 inline-block w-2.5 h-2.5 rounded-full bg-white/80"></span>
+              Checklist de recomendaciones personalizadas TI
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1 inline-block w-2.5 h-2.5 rounded-full bg-white/80"></span>
+              Informe PDF con recomendaciones priorizadas con cotización digital.
+            </li>
+          </ul>
+          <a href="#contacto"
+             class="mt-5 inline-flex w-full justify-center rounded-xl bg-white text-[var(--brand)] px-5 py-3 font-semibold hover:opacity-90">
+            🚀 Quiero mi diagnóstico
+          </a>
+          <p class="mt-3 text-[11px] text-white/70">
+            
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+
+  <!-- Contacto -->
+  <section id="contacto" class="container mx-auto px-4 py-12">
+    <div class="grid md:grid-cols-2 gap-10 items-start">
+      <div>
+        <h2 class="section-title">Conversemos</h2>
+        <p class="mt-3 text-slate-400">Cuéntanos sobre tu empresa y te daremos la mejor solución tecnologica de acuerdo a tu presupuesto.</p>
+        <ul class="mt-6 space-y-2 text-slate-300">
+          <li>📍 Parral, Región del Maule-Ñuble</li>
+          <li>📞 +56 9 20576206</li>
+          <li>📧 ventas@kodesk.cl</li>
+        </ul>
+        <div class="mt-6 flex gap-3">
+          <a href="https://wa.me/{{ config.WHATSAPP_PHONE }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-700 px-4 py-2 hover:bg-slate-900" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://cl.linkedin.com/in/javier-chandia-b527a5363" class="inline-flex items-center gap-2 rounded-xl border border-slate-700 px-4 py-2 hover:bg-slate-900">LinkedIn CEO</a>
+        </div>
+      </div>
+      
+
+
+
+      <form method="POST" action="{{ url_for('main.contacto') }}" class="card p-6 shadow-soft ring-1 ring-slate-800">
+  {{ form.hidden_tag() }}
+  <div class="grid md:grid-cols-2 gap-4">
+    <div>
+      <label class="text-sm font-medium">Nombre</label>
+      {{ form.nombre(class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2") }}
+    </div>
+    <div>
+      <label class="text-sm font-medium">Email</label>
+      {{ form.email(class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2") }}
+    </div>
+    <div class="md:col-span-2">
+      <label class="text-sm font-medium">Teléfono</label>
+      {{ form.telefono(class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2") }}
+    </div>
+    <div class="md:col-span-2">
+      <label class="text-sm font-medium">Empresa</label>
+      {{ form.empresa(class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2") }}
+    </div>
+    <div class="md:col-span-2">
+      <label class="text-sm font-medium">¿Cómo podemos ayudar?</label>
+      {{ form.mensaje(class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2") }}
+    </div>
+  </div>
+  <button type="submit" class="mt-4 inline-flex rounded-xl bg-[var(--brand)] px-5 py-3 font-semibold text-white hover:bg-[#08324f]">
+    Enviar consulta
+  </button>
+  <p class="mt-2 text-xs text-slate-500">Al enviar aceptas nuestra política de privacidad.</p>
+</form>
+
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/70">
+    <div class="container mx-auto px-4 py-10 grid md:grid-cols-4 gap-8 text-slate-300">
+      <div>
+        <div class="text-lg font-semibold mb-2">Kodesk.cl</div>
+        <p class="text-slate-400 text-sm">Primera Consultora TI integral en Parral atendiendo, apoyando a empresas de la Región del Maule y Ñuble con soluciones modernas, seguras y escalables.</p>
+      </div>
+      <div>
+        <div class="font-semibold mb-2">Servicios</div>
+        <ul class="space-y-1 text-slate-400 text-sm">
+          <li><a href="#servicios" class="hover:underline">Arquitectura & Modernización</a></li>
+          <li><a href="#servicios" class="hover:underline">Redes & Ciberseguridad</a></li>
+          <li><a href="#servicios" class="hover:underline">Desarrollo & Integraciones</a></li>
+          <li><a href="#servicios" class="hover:underline">Nube & Virtualización</a></li>
+          <li><a href="#servicios" class="hover:underline">Data, BI & IA</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold mb-2">Empresa</div>
+        <ul class="space-y-1 text-slate-400 text-sm">
+          <li><a href="#clientes" class="hover:underline">Clientes</a></li>
+          <li><a href="#plataformas" class="hover:underline">Plataformas</a></li>
+          <li><a href="#contacto" class="hover:underline">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold mb-2">Contacto</div>
+        <ul class="space-y-1 text-slate-400 text-sm">
+          <li>WhatsApp: <a class="underline" target="_blank" href="https://wa.me/{{ config.WHATSAPP_PHONE }}">+{{ config.WHATSAPP_PHONE }}</a></li>
+          <li>Email: hola@kodesk.cl</li>
+          <li>Parral, Región del Maule</li>
+        </ul>
+      </div>
+    </div>
+    <div class="text-center text-slate-500 text-xs pb-8">© {{ config.STORE_NAME or 'Kodesk.cl' }} · Todos los derechos reservados LEUCODE.IA®.</div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (menuBtn) { menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden')); }
+  </script>
+</body>
+</html>

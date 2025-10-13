@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContruDesk - Control total, construcción real</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="font-sans text-gray-800">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow fixed w-full z-10">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <h1 class="text-2xl font-bold text-blue-900">ContruDesk</h1>
+      <ul class="flex space-x-6 font-semibold">
+        <li><a href="#beneficios" class="hover:text-yellow-500">Beneficios</a></li>
+        <li><a href="#funcionalidades" class="hover:text-yellow-500">Funcionalidades</a></li>
+        <li><a href="#demos" class="hover:text-yellow-500">Demo</a></li>
+        <li><a href="#contacto" class="hover:text-yellow-500">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+
+ 
+
+
+  <!-- HERO con VIDEO -->
+<header class="relative h-screen w-full flex items-center justify-center text-center text-white">
+  <video autoplay muted loop playsinline class="absolute w-full h-full object-cover">
+    <source src="static/video.mp4" type="video/mp4">
+  </video>
+  <div class="absolute inset-0 bg-blue-900 bg-opacity-70"></div>
+
+  <div class="relative z-10 max-w-4xl mx-auto px-6">
+    <!-- Logo -->
+    <img src="static/logo.png" 
+         alt="Logo ContruDesk" 
+         class="mx-auto mb-8 w-48 md:w-56 lg:w-64 drop-shadow-2xl">
+
+    <!-- Título -->
+    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
+      Control total, construcción real
+    </h2>
+
+    <!-- Subtítulo -->
+    <p class="text-lg md:text-xl mb-10 text-gray-100 max-w-2xl mx-auto">
+      La plataforma digital que transforma la gestión de tus proyectos de construcción.
+    </p>
+
+    <!-- CTA -->
+    <a href="#demos" 
+       class="bg-yellow-400 text-blue-900 px-10 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition shadow-lg">
+       🚀 Solicita tu Demo
+    </a>
+  </div>
+</header>
+
+
+  <!-- BENEFICIOS -->
+  <section id="beneficios" class="py-28 bg-gray-50">
+    <div class="container mx-auto text-center">
+      <h3 class="text-4xl font-bold text-blue-900 mb-6">Beneficios de ContruDesk</h3>
+      <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Optimiza tus proyectos con control total, comunicación fluida y datos en tiempo real.</p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="static/logo.png" alt="Dashboard" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Visión Global</h4>
+          <p>Monitorea todas tus obras con indicadores claros y actualizados.</p>
+        </div>
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="static/logo.png" alt="Colaboración" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Colaboración</h4>
+          <p>Admins, residentes y maestros conectados en un solo sistema.</p>
+        </div>
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="static/logo.png" alt="Reportes" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Reportes Automáticos</h4>
+          <p>Genera informes listos para clientes y gerencia en segundos.</p>
+        </div>
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="static/logo.png" alt="Seguridad" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Transparencia</h4>
+          <p>Evidencias y bitácoras digitales accesibles desde cualquier dispositivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES con imagen -->
+  <section id="funcionalidades" class="py-28">
+    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h3 class="text-4xl font-bold text-blue-900 mb-6">Funcionalidades Clave</h3>
+        <ul class="space-y-6 text-lg">
+          <li><strong>Dashboard Global:</strong> Avances físicos y financieros en tiempo real.</li>
+          <li><strong>Gestión de Obras:</strong> Cronogramas y validación de residentes.</li>
+          <li><strong>Bitácora Digital:</strong> Registro de avances, fotos y consumos desde el campo.</li>
+          <li><strong>Control de Materiales:</strong> Inventario actualizado con alertas de consumo.</li>
+          <li><strong>Seguridad y Calidad:</strong> Checklists HSE y control normativo.</li>
+        </ul>
+      </div>
+      <div>
+        <img src="static/logo.png" alt="Funcionalidades ContruDesk" class="rounded-xl shadow-lg">
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO DEMO -->
+  <section id="demos" class="py-28 bg-blue-900 text-white text-center">
+    <h3 class="text-4xl font-bold mb-6">Mira ContruDesk en acción</h3>
+    <p class="text-lg mb-12 max-w-2xl mx-auto">Descubre cómo nuestra plataforma revoluciona la gestión de proyectos de construcción.</p>
+    <div class="max-w-4xl mx-auto">
+      <iframe class="w-full h-96 rounded-xl shadow-lg" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="mt-10">
+      <a href="#contacto" class="bg-yellow-400 text-blue-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300">Agenda tu Demo</a>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+
+
+
+  
+  <!-- Contacto -->
+<!-- CONTACTO con VIDEO de fondo -->
+<section id="contacto" class="relative py-28 text-white">
+  <!-- Video de fondo -->
+  <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+    <source src="static/contacto-bg.mp4" type="video/mp4">
+  </video>
+  <!-- Overlay para contraste -->
+  <div class="absolute inset-0 bg-blue-900 bg-opacity-80"></div>
+
+  <!-- Contenido -->
+  <div class="relative max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
+    
+    <!-- Info de contacto -->
+    <div data-aos="fade-right">
+      <h2 class="text-4xl font-extrabold mb-6">Conversemos</h2>
+      <p class="text-lg text-gray-200">Cuéntanos sobre tu constructora y te mostraremos cómo <strong>ContruDesk</strong> puede darte control total.</p>
+      <ul class="mt-8 space-y-3 text-lg">
+        <li>📍 Parral, Maule & Ñuble</li>
+        <li>📞 +56 9 1234 5678</li>
+        <li>📧 contacto@contrudesk.com</li>
+      </ul>
+    </div>
+
+    <!-- Formulario -->
+    <form method="POST" action="{{ url_for('main.contacto') }}" 
+          class="p-8 bg-white/95 rounded-xl shadow-2xl backdrop-blur-md" data-aos="fade-left">
+      {{ form.hidden_tag() }}
+
+      <label class="block mb-2 font-semibold text-blue-900">Nombre</label>
+      {{ form.nombre(class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400") }}
+
+      <label class="block mb-2 font-semibold text-blue-900">Email</label>
+      {{ form.email(class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400") }}
+
+      <label class="block mb-2 font-semibold text-blue-900">Teléfono</label>
+      {{ form.telefono(class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400") }}
+
+      <label class="block mb-2 font-semibold text-blue-900">Empresa</label>
+      {{ form.empresa(class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400") }}
+
+      <label class="block mb-2 font-semibold text-blue-900">Mensaje</label>
+      {{ form.mensaje(class="w-full mb-6 p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400") }}
+
+      <button type="submit" 
+              class="w-full bg-yellow-400 text-blue-900 px-6 py-3 rounded-lg font-bold hover:bg-yellow-300 transition shadow-lg">
+        🚀 Enviar Mensaje
+      </button>
+    </form>
+  </div>
+</section>
+
+
+  <!-- FOOTER -->
+  <footer class="bg-blue-900 text-white py-8 text-center">
+    <p>© 2025 ContruDesk | Tu escritorio digital para la construcción</p>
+    <p class="text-sm mt-2">© 2025 | Todos los derechos Reservados  </p>
+    <p class="text-sm mt-2">BY KODESK.CL--AgroDesk--LEUCODE.IA</p>
+  </footer>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+</body>
+</html>

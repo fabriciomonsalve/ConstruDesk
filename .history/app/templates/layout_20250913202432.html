@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Kodesk Admin{% endblock %}</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fuente profesional -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<img src="{{ url_for('static', filename='images/kodesk.png') }}">
+
+  <!-- Estilos base -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    .btn {
+      @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition;
+    }
+    .btn-primary {
+      @apply bg-blue-600 text-white hover:bg-blue-700;
+    }
+    .btn-ghost {
+      @apply bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700;
+    }
+    .card {
+      @apply bg-slate-900 border border-slate-800 rounded-xl shadow-lg;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header fijo -->
+  <header class="w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex items-center justify-between">
+    <a href="{{ url_for('main.index') }}" class="text-xl font-bold text-white">
+      Kodesk<span class="text-blue-400">.cl</span>
+    </a>
+    <nav class="hidden md:flex gap-6 text-sm text-slate-300">
+      <a href="{{ url_for('main.index') }}" class="hover:text-white">Inicio</a>
+      <a href="{{ url_for('admin.login') }}" class="hover:text-white">Admin</a>
+    </nav>
+  </header>
+
+  <!-- Contenido dinámico -->
+  <main class="flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-slate-500 text-sm">
+    © {{ config.STORE_NAME or "Kodesk.cl" }} ·  Todos los derechos reservados LEUCODE.IA®.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container max-w-4xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Crear Proyecto</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      
+      <div class="space-y-6">
+        <!-- Nombre del Proyecto -->
+        <div class="form-group">
+          <label for="name" class="block text-sm font-medium text-gray-700">Nombre del Proyecto</label>
+          {{ form.name(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.name.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group">
+          <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+          {{ form.description(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.description.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Fecha de Inicio -->
+        <div class="form-group">
+          <label for="start_date" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+          {{ form.start_date(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.start_date.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Fecha de Fin -->
+        <div class="form-group">
+          <label for="end_date" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+          {{ form.end_date(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.end_date.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Progreso -->
+        <div class="form-group">
+          <label for="progress" class="block text-sm font-medium text-gray-700">Progreso (%)</label>
+          {{ form.progress(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.progress.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Estado -->
+        <div class="form-group">
+          <label for="status" class="block text-sm font-medium text-gray-700">Estado</label>
+          {{ form.status(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.status.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Comentario del Administrador -->
+        <div class="form-group">
+          <label for="admin_comment" class="block text-sm font-medium text-gray-700">Comentario del Administrador</label>
+          {{ form.admin_comment(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.admin_comment.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Botón de envío -->
+        <div class="text-center">
+          <button type="submit" class="w-full bg-[#1e3a8a] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#1e40af] focus:outline-none focus:ring-4 focus:ring-blue-500 transition duration-300">
+            Guardar Proyecto
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

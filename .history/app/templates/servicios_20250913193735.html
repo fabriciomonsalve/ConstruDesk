@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ config.STORE_NAME or 'Kodesk.cl' }} – Servicios de Consultoría TI</title>
+  <meta name="description" content="Consultoría TI, redes, ciberseguridad, nube, desarrollo, data/BI/IA, automatización y soporte gestionado para empresas.">
+  <link rel="icon" href="{{ url_for('static', filename='kodesk.png') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{ --brand:#0A3D62; --brand-2:#3C9DD0; }
+    .container{ max-width:1200px; }
+    .card{ background:#0b1220; border:1px solid #1f2a44; border-radius:1rem; }
+    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.65rem 1rem; border-radius:.75rem; font-weight:600; }
+    .btn-primary{ background:var(--brand); color:#fff; } .btn-primary:hover{ background:#08324f; }
+    .btn-ghost{ background:#0b1220; border:1px solid #1f2a44; color:#cbd5e1; } .btn-ghost:hover{ background:#0f172a; }
+    .badge{ font-size:.65rem; letter-spacing:.06em; text-transform:uppercase; padding:.25rem .5rem; border-radius:999px; border:1px solid #1f2a44; color:#cbd5e1; background:#0b1220; }
+    .shadow-soft{ box-shadow:0 10px 30px rgba(0,0,0,.25); }
+    .chip{ @apply inline-flex items-center rounded-full px-3 py-1 text-xs border border-slate-700 bg-slate-900 hover:bg-slate-800; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+
+  <!-- Header mínimo -->
+  <header class="w-full border-b border-slate-800/70 sticky top-0 z-40 bg-slate-950/80 backdrop-blur">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="{{ url_for('main.index') }}" class="flex items-center gap-3">
+        <img src="{{ url_for('static', filename='kodesk.png') }}" class="h-8 w-8 rounded-md" alt="Kodesk logo">
+        <div class="text-lg font-semibold">Kodesk<span class="text-slate-400">.cl</span></div>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-slate-300">
+        <a href="{{ url_for('main.index') }}" class="hover:text-white">Inicio</a>
+        <a href="#filtros" class="hover:text-white">Servicios</a>
+        <a href="#bundles" class="hover:text-white">Bundles</a>
+        <a href="#faq" class="hover:text-white">FAQ</a>
+        <a href="#contacto" class="hover:text-white">Contacto</a>
+      </nav>
+      <a class="btn btn-primary hidden md:inline-flex" target="_blank" rel="noopener"
+         href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Hola Kodesk 👋, quiero cotizar servicios de consultoría.'|urlencode }}">
+        Cotizar por WhatsApp
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero / título -->
+  <section class="container mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-12 gap-6 items-center">
+      <div class="md:col-span-7">
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">
+          Servicios de Consultoría TI <span class="text-[var(--brand-2)]">& Soluciones</span>
+        </h1>
+        <p class="text-slate-300 mt-3 max-w-2xl">
+          Arquitectura, redes, ciberseguridad, nube, desarrollo, data/BI/IA, RPA y soporte gestionado (MSP). Diseñamos soluciones que aceleran tu negocio.
+        </p>
+        <div class="mt-5 flex gap-3">
+          <a href="#grid" class="btn btn-primary">Ver catálogo de servicios</a>
+          <a href="#contacto" class="btn btn-ghost">Solicitar diagnóstico</a>
+        </div>
+      </div>
+      <div class="md:col-span-5">
+        <div class="card p-6 shadow-soft">
+          <h3 class="font-bold">Pack sugerido: <span class="text-[var(--brand-2)]">Inicio Seguro</span></h3>
+          <ul class="mt-3 text-sm text-slate-300 space-y-1">
+            <li>✓ Auditoría de seguridad básica</li>
+            <li>✓ VPN + MFA + políticas de acceso</li>
+            <li>✓ Backups en nube (config inicial)</li>
+          </ul>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="text-slate-300 text-sm">Desde</span>
+            <span class="text-xl font-extrabold text-[var(--brand-2)]">10–18 UF</span>
+          </div>
+          <a class="mt-4 btn btn-primary w-full"
+             href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Quiero el pack Inicio Seguro (auditoría+VPN+MFA+backups).'|urlencode }}"
+             target="_blank" rel="noopener">Cotizar pack</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Grid de servicios -->
+<section class="container mx-auto px-4 py-12" data-aos="fade-up">
+  <div class="mb-8 text-center">
+    <h3 class="text-2xl md:text-3xl font-extrabold">Casos reales en plataformas</h3>
+    <p class="text-slate-400 text-sm mt-2">Revisa implementaciones reales con impacto en empresas de la región.</p>
+  </div>
+
+  <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-6 justify-items-center">
+
+    <!-- Reel 1 -->
+    <div class="card p-4 shadow-soft ring-1 ring-slate-800/70 w-full max-w-[400px]" data-aos="zoom-in" data-aos-delay="100">
+      <div class="text-sm font-semibold mb-2 text-slate-300">Sistema digital para empresa agrícola</div>
+      <blockquote class="instagram-media"
+        data-instgrm-permalink="https://www.instagram.com/reel/DNgAqd4NfNa/"
+        data-instgrm-version="14"
+        style="width:100%; margin:0 auto;">
+      </blockquote>
+    </div>
+
+    <!-- Reel 2 -->
+    <div class="card p-4 shadow-soft ring-1 ring-slate-800/70 w-full max-w-[400px]" data-aos="zoom-in" data-aos-delay="200">
+      <div class="text-sm font-semibold mb-2 text-slate-300">Asistente de salud con IA para clínicas</div>
+      <blockquote class="instagram-media"
+        data-instgrm-permalink="https://www.instagram.com/reel/DOC55ggjFZC/"
+        data-instgrm-version="14"
+        style="width:100%; margin:0 auto;">
+      </blockquote>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+  <!-- Bundles / Comparador -->
+  <section id="bundles" class="container mx-auto px-4 pb-10">
+    <div class="flex items-end justify-between mb-4">
+      <h2 class="text-2xl md:text-3xl font-extrabold">Bundles recomendados</h2>
+      <a href="#contacto" class="text-sm text-[var(--brand-2)] hover:underline">Solicitar bundle a medida</a>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="card p-6 shadow-soft">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">Inicio Seguro</h3><span class="badge">Seguridad</span>
+        </div>
+        <ul class="mt-3 text-sm text-slate-300 space-y-1">
+          <li>✓ Auditoría básica</li><li>✓ VPN + MFA</li><li>✓ Backups cloud</li>
+        </ul>
+        <div class="mt-3 text-[var(--brand-2)] font-extrabold">10–18 UF</div>
+        <a class="mt-4 btn btn-primary w-full" target="_blank" rel="noopener"
+           href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Quiero el bundle Inicio Seguro.'|urlencode }}">Cotizar</a>
+      </div>
+      <div class="card p-6 shadow-soft">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">Oficina en la Nube</h3><span class="badge">Nube</span>
+        </div>
+        <ul class="mt-3 text-sm text-slate-300 space-y-1">
+          <li>✓ M365 o GWS</li><li>✓ Fileshare + Backup</li><li>✓ Telefonía IP</li>
+        </ul>
+        <div class="mt-3 text-[var(--brand-2)] font-extrabold">15–28 UF</div>
+        <a class="mt-4 btn btn-primary w-full" target="_blank" rel="noopener"
+           href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Quiero el bundle Oficina en la Nube.'|urlencode }}">Cotizar</a>
+      </div>
+      <div class="card p-6 shadow-soft">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">Datos & Decisiones</h3><span class="badge">BI & IA</span>
+        </div>
+        <ul class="mt-3 text-sm text-slate-300 space-y-1">
+          <li>✓ Dashboard BI</li><li>✓ Integración ETL</li><li>✓ PoC IA</li>
+        </ul>
+        <div class="mt-3 text-[var(--brand-2)] font-extrabold">18–35 UF</div>
+        <a class="mt-4 btn btn-primary w-full" target="_blank" rel="noopener"
+           href="https://wa.me/{{ config.WHATSAPP_PHONE }}?text={{ 'Quiero el bundle Datos & Decisiones.'|urlencode }}">Cotizar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal “ver rápido” -->
+  <div id="serviceModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative mx-auto my-10 w-[92%] max-w-xl">
+      <div class="card p-6 shadow-soft ring-1 ring-slate-800">
+        <div class="flex items-start justify-between">
+          <h3 id="mTitle" class="text-xl font-bold">Servicio</h3>
+          <button id="mClose" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+        <p id="mSummary" class="mt-2 text-slate-300 text-sm">Resumen</p>
+        <div class="mt-4">
+          <div class="text-[var(--brand-2)] font-extrabold" id="mPrice">—</div>
+          <div id="mTags" class="mt-2 flex flex-wrap gap-2 text-xs"></div>
+        </div>
+        <div class="mt-5 flex gap-2">
+          <a id="mWhats" href="#" target="_blank" rel="noopener" class="btn btn-primary">Cotizar por WhatsApp</a>
+          <a href="#contacto" class="btn btn-ghost">Escríbenos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ breve -->
+  <section id="faq" class="container mx-auto px-4 py-12">
+    <h2 class="text-2xl md:text-3xl font-black">Preguntas frecuentes</h2>
+    <div class="mt-6 grid md:grid-cols-2 gap-6">
+      <details class="card p-5">
+        <summary class="cursor-pointer font-semibold">¿Cómo definen el precio en UF?</summary>
+        <p class="text-slate-400 text-sm mt-2">Usamos rangos según complejidad, alcance y plazos. Cotización cerrada tras el diagnóstico.</p>
+      </details>
+      <details class="card p-5">
+        <summary class="cursor-pointer font-semibold">¿Trabajan remoto y en terreno?</summary>
+        <p class="text-slate-400 text-sm mt-2">Sí, desde Parral para la región y remoto para el resto del país.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="container mx-auto px-4 pb-16">
+    <div class="card p-6 shadow-soft ring-1 ring-slate-800">
+      <h3 class="text-xl font-bold">Conversemos</h3>
+      <p class="text-slate-400 text-sm mt-1">Agenda una llamada y te enviamos una propuesta.</p>
+      <form class="mt-4 grid md:grid-cols-3 gap-3">
+        <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2" placeholder="Nombre">
+        <input type="email" class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2" placeholder="Email">
+        <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2" placeholder="Empresa">
+        <textarea class="md:col-span-3 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2" rows="3" placeholder="¿Qué necesitas?"></textarea>
+        <button type="button" class="btn btn-primary md:col-span-3 justify-center">Enviar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- JS: búsqueda + filtros + modal -->
+  <script>
+    // Búsqueda y filtros
+    const filterBtns = document.querySelectorAll('[data-filter]');
+    const search = document.getElementById('search');
+    const clearSearch = document.getElementById('clearSearch');
+    const cards = document.querySelectorAll('.service-card');
+
+    function applyFilters() {
+      const active = document.querySelector('[data-filter].ring-2')?.dataset.filter || 'all';
+      const q = (search.value || '').toLowerCase().trim();
+      cards.forEach(c => {
+        const catOk = (active === 'all') || c.dataset.category === active || (active === 'Redes' && c.dataset.category.includes('Redes'));
+        const tags = (c.dataset.tags || '').toLowerCase();
+        const text = (c.textContent || '').toLowerCase();
+        const qOk = !q || tags.includes(q) || text.includes(q);
+        c.classList.toggle('hidden', !(catOk && qOk));
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b=>b.classList.remove('ring-2','ring-[var(--brand-2)]'));
+        btn.classList.add('ring-2','ring-[var(--brand-2)]');
+        applyFilters();
+      });
+    });
+    search.addEventListener('input', applyFilters);
+    clearSearch.addEventListener('click', ()=>{ search.value=''; applyFilters(); });
+
+    // Modal ver rápido
+    const modal = document.getElementById('serviceModal');
+    const mTitle = document.getElementById('mTitle');
+    const mSummary = document.getElementById('mSummary');
+    const mPrice = document.getElementById('mPrice');
+    const mWhats = document.getElementById('mWhats');
+    const mTags = document.getElementById('mTags');
+
+    document.querySelectorAll('.open-modal').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const name = btn.dataset.name || 'Servicio';
+        const summary = btn.dataset.summary || '';
+        const price = btn.dataset.price || '';
+        const tags = btn.dataset.tags || '';
+
+        mTitle.textContent = name;
+        mSummary.textContent = summary;
+        mPrice.textContent = price;
+
+        mTags.innerHTML = '';
+        tags.split(',').map(t=>t.trim()).filter(Boolean).slice(0,6).forEach(t=>{
+          const span = document.createElement('span');
+          span.className = 'chip';
+          span.textContent = t;
+          mTags.appendChild(span);
+        });
+
+        const msg = encodeURIComponent(`Hola Kodesk, me interesa el servicio: ${name}. ¿Podemos agendar?`);
+        mWhats.href = `https://wa.me/{{ config.WHATSAPP_PHONE }}?text=${msg}`;
+        modal.classList.remove('hidden');
+      });
+    });
+
+    document.getElementById('mClose').addEventListener('click', ()=>modal.classList.add('hidden'));
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.classList.add('hidden'); });
+
+    // Selección por defecto
+    (function(){ 
+      const first = document.querySelector('[data-filter="all"]'); 
+      if(first){ first.classList.add('ring-2','ring-[var(--brand-2)]'); } 
+    })();
+  </script>
+
+
+<script async src="//www.instagram.com/embed.js"></script>
+
+
+</body>
+
+ <!-- Footer -->
+  <footer class="border-t border-slate-800/70">
+    <div class="container mx-auto px-4 py-10 grid md:grid-cols-4 gap-8 text-slate-300">
+      <div>
+        <div class="text-lg font-semibold mb-2">Kodesk.cl</div>
+        <p class="text-slate-400 text-sm">Consultora TI integral basada en Parral, apoyando a empresas de la Región del Maule con soluciones modernas, seguras y escalables.</p>
+      </div>
+      <div>
+        <div class="font-semibold mb-2">Servicios</div>
+        <ul class="space-y-1 text-slate-400 text-sm">
+          <li><a href="#servicios" class="hover:underline">Arquitectura & Modernización</a></li>
+          <li><a href="#servicios" class="hover:underline">Redes & Ciberseguridad</a></li>
+          <li><a href="#servicios" class="hover:underline">Desarrollo & Integraciones</a></li>
+          <li><a href="#servicios" class="hover:underline">Nube & Virtualización</a></li>
+          <li><a href="#servicios" class="hover:underline">Data, BI & IA</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold mb-2">Empresa</div>
+        <ul class="space-y-1 text-slate-400 text-sm">
+          <li><a href="#clientes" class="hover:underline">Clientes</a></li>
+          <li><a href="#plataformas" class="hover:underline">Plataformas</a></li>
+          <li><a href="#contacto" class="hover:underline">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold mb-2">Contacto</div>
+        <ul class="space-y-1 text-slate-400 text-sm">
+          <li>WhatsApp: <a class="underline" target="_blank" href="https://wa.me/{{ config.WHATSAPP_PHONE }}">+{{ config.WHATSAPP_PHONE }}</a></li>
+          <li>Email: hola@kodesk.cl</li>
+          <li>Parral, Región del Maule</li>
+        </ul>
+      </div>
+    </div>
+    <div class="text-center text-slate-500 text-xs pb-8">© {{ config.STORE_NAME or 'Kodesk.cl' }} · Todos los derechos reservados LEUCODE.IA®.</div>
+  </footer>
+</html>

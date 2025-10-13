@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Kodesk Admin{% endblock %}</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fuente profesional -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+  <!-- Estilos base -->
+
+  <style>
+  body {
+    font-family: 'Inter', sans-serif !important; 
+    background: #0f172a !important; /* Fondo oscuro global */
+    color: #e2e8f0 !important; /* Texto claro global */
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  .btn-ghost {
+    @apply bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700;
+  }
+
+  .card {
+    @apply bg-slate-900 border border-slate-800 rounded-xl shadow-lg;
+  }
+
+  /* Excluir el formulario del estilo global */
+  .no-form-style .form-control {
+    background-color: #f9fafb !important; /* Fondo claro para los campos de entrada */
+    color: #374151 !important; /* Color de texto oscuro */
+    border: 1px solid #d1d5db !important; /* Borde sutil */
+  }
+
+  .no-form-style .btn-create {
+    background-color: #ef4444 !important; /* Rojo brillante */
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+
+  .no-form-style .btn-create:hover {
+    background-color: #dc2626 !important; /* Rojo más oscuro al pasar el ratón */
+  }
+</style>
+
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header fijo -->
+  <header class="w-full bg-slate-900 border-b border-slate-800 py-4 px-6 flex items-center justify-between">
+    <a href="{{ url_for('main.index') }}" class="text-xl font-bold text-white">
+      ContruDESK<span class="text-blue-400"></span>
+    </a>
+    
+    <!-- Navbar (si el usuario está autenticado, mostrar su nombre y cerrar sesión) -->
+    <nav class="hidden md:flex gap-6 text-sm text-slate-300">
+        {% if current_user.is_authenticated %}
+          {% if current_user.has_role('admin') %}
+            <a href="{{ url_for('admin.admin_dashboard') }}" class="hover:text-white">Panel Admin</a>
+          {% elif current_user.has_role('editor') %}
+            <a href="{{ url_for('editor.editor_dashboard') }}" class="hover:text-white">Dashboard Editor</a>
+          {% elif current_user.has_role('miembro') %}
+            <a href="{{ url_for('miembro.miembro_dashboard') }}" class="hover:text-white">Dashboard Miembro</a>
+          {% elif current_user.has_role('lector') %}
+            
+          {% else %}
+            <a href="{{ url_for('main.index') }}" class="hover:text-white">Inicio</a>
+          {% endif %}
+        {% else %}
+        {% endif %}
+
+      <!-- Mostrar el nombre del usuario si está autenticado y enlace de cerrar sesión -->
+      {% if current_user.is_authenticated %}
+        <span class="text-white">Hola, {{ current_user.nombre }}</span>
+        <a href="{{ url_for('auth.logout') }}" class="hover:text-white">Cerrar sesión</a>
+      {% else %}
+        <!-- Si el usuario no está autenticado, mostrar enlace de login -->
+        <a href="{{ url_for('auth.login') }}" class="hover:text-white">Iniciar Sesión</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- Panel de navegación bajo el header (visible solo si el usuario está autenticado) -->
+  {% if current_user.is_authenticated %}
+    <nav class="bg-slate-800 py-3 px-6">
+      <ul class="flex space-x-4">
+        {% if current_user.has_role('admin') %}
+          <li><a href="{{ url_for('admin.admin_dashboard') }}" class="text-gray hover:text-blue-400">Admin Dashboard</a></li>
+          <li><a href="{{ url_for('admin.usuarios') }}" class="text-gray hover:text-blue-400">Usuarios</a></li>
+          <li><a href="{{ url_for('admin.list_projects') }}" class="text-gray hover:text-blue-400">Gestión de Proyectos</a></li>
+          <li><a href="{{ url_for('admin.assign_user_to_project') }}" class="text-gray hover:text-blue-400">Asignar Usuario a Proyecto</a></li>
+        {% elif current_user.has_role('editor') %}
+          <li><a href="{{ url_for('editor.editor_dashboard') }}" class="text-gray hover:text-blue-400">Gestion de Documentos</a></li>
+        {% elif current_user.has_role('security') %}
+
+        {% elif current_user.has_role('resident') %}
+
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  <!-- Contenido dinámico -->
+  <main class="flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-slate-500 text-sm">
+    © {{ config.STORE_NAME or "Kodesk.cl" }} ·  Todos los derechos reservados leucode.IA®.
+  </footer>
+
+</body>
+</html>

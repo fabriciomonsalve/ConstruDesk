@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mx-auto mt-10 px-4 sm:px-6 lg:px-8 mb-20">
+  <div class="max-w-2xl mx-auto">
+    
+    <!-- Formulario principal -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+      
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl mb-4 shadow-lg shadow-blue-500/30">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">
+          Subir Documento para el Proyecto: {{ project.name }}
+        </h2>
+      </div>
+
+      <!-- Mensajes de éxito o error -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="mb-6 animate-fadeIn">
+              <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 flex items-start gap-3 shadow-lg">
+                <div class="flex-shrink-0 w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-gray-900 font-medium">{{ message }}</p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        
+        <!-- Upload Area -->
+        <div>
+          <label for="file" class="block text-sm font-semibold text-gray-900 mb-3">
+            Subir Documento
+          </label>
+          <div class="relative group">
+            <input type="file" 
+                   name="file" 
+                   id="file" 
+                   class="peer hidden" 
+                   required
+                   onchange="updateFileName(this)">
+            <label for="file" 
+                   class="flex flex-col items-center justify-center w-full h-48 px-4 transition-all duration-300 bg-gradient-to-br from-slate-50 to-blue-50 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:border-blue-400 peer-focus:ring-4 peer-focus:ring-blue-500/20">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-12 h-12 mb-4 text-gray-400 group-hover:text-blue-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <p class="mb-2 text-sm text-gray-900 font-medium">
+                  <span class="font-semibold text-blue-600">Haz clic para seleccionar</span> o arrastra el archivo
+                </p>
+                <p class="text-xs text-gray-900" id="file-name">PDF, DOC, DOCX, TXT (MAX. 10MB)</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div>
+          <label for="description" class="block text-sm font-semibold text-gray-900 mb-3">
+            Descripción
+          </label>
+          <div class="relative">
+            <textarea name="description" 
+                      id="description" 
+                      rows="3" 
+                      placeholder="Describe brevemente el contenido del documento..."
+                      class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none"
+                      required></textarea>
+          </div>
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="pt-4">
+          <button type="submit" 
+                  class="w-full group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/50 transition-all duration-300">
+            <svg class="w-5 h-5 transition-transform group-hover:-translate-y-1 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            Subir Documento
+          </button>
+        </div>
+      </form>
+
+      <!-- Info adicional -->
+      <div class="mt-8 pt-6 border-t border-gray-200">
+        <div class="flex items-start gap-3 text-sm text-gray-900">
+          <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <p class="font-medium text-gray-900 mb-1">Formatos aceptados</p>
+            <p class="text-gray-900">Puedes subir documentos en formato PDF, Word (DOC/DOCX), o archivos de texto (TXT). El tamaño máximo permitido es de 10MB.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Actualizar nombre del archivo seleccionado
+function updateFileName(input) {
+  const fileNameDisplay = document.getElementById('file-name');
+  if (input.files && input.files[0]) {
+    const fileName = input.files[0].name;
+    const fileSize = (input.files[0].size / 1024 / 1024).toFixed(2);
+    fileNameDisplay.textContent = `${fileName} (${fileSize} MB)`;
+    fileNameDisplay.classList.add('font-semibold', 'text-blue-600');
+  }
+}
+</script>
+
+<style>
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+</style>
+{% endblock %}

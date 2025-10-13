@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Panel administrador · Kodesk{% endblock %}
+
+{% block content %}
+<section class="container mx-auto px-4 py-12">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+      📊 Panel administrador
+    </h2>
+    <a href="{{ url_for('admin.logout') }}"
+       class="px-4 py-2 rounded-lg bg-rose-700 text-white hover:bg-rose-600 text-sm font-semibold w-max">
+      Cerrar sesión
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid sm:grid-cols-3 gap-6 mb-10">
+    <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
+      <p class="text-slate-400 text-sm">Total mensajes</p>
+      <p class="text-3xl font-black text-[var(--brand-2)]">{{ mensajes|length }}</p>
+    </div>
+    <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
+      <p class="text-slate-400 text-sm">Pendientes</p>
+      <p class="text-3xl font-black text-amber-400">
+        {{ mensajes|selectattr("leido", "equalto", False)|list|length }}
+      </p>
+    </div>
+    <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
+      <p class="text-slate-400 text-sm">Leídos</p>
+      <p class="text-3xl font-black text-emerald-400">
+        {{ mensajes|selectattr("leido", "equalto", True)|list|length }}
+      </p>
+    </div>
+  </div>
+
+  
+
+  <!-- Tabla de mensajes -->
+  <div class="overflow-x-auto rounded-lg border border-slate-800">
+    <table class="min-w-full text-sm">
+      <thead class="bg-slate-800 text-slate-200 text-left">
+        <tr>
+          <th class="px-4 py-2 whitespace-nowrap">#</th>
+          <th class="px-4 py-2 whitespace-nowrap">Nombre</th>
+          <th class="px-4 py-2 whitespace-nowrap">Email</th>
+          <th class="px-4 py-2 whitespace-nowrap">Teléfono</th>
+          <th class="px-4 py-2 whitespace-nowrap">Empresa</th>
+          <th class="px-4 py-2 whitespace-nowrap">Mensaje</th>
+          <th class="px-4 py-2 whitespace-nowrap">Fecha</th>
+          <th class="px-4 py-2 text-center whitespace-nowrap">Estado</th>
+          <th class="px-4 py-2 text-center whitespace-nowrap">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800">
+        {% for m in mensajes %}
+        <tr class="{% if not m.leido %}bg-slate-900/40{% endif %}">
+          <td class="px-4 py-2">{{ m.id }}</td>
+          <td class="px-4 py-2 font-medium">{{ m.nombre }}</td>
+          <td class="px-4 py-2">
+            <a href="mailto:{{ m.email }}" class="text-[var(--brand-2)] hover:underline">
+              {{ m.email }}
+            </a>
+          </td>
+          <td class="px-4 py-2">{{ m.telefono or '-' }}</td>
+          <td class="px-4 py-2">{{ m.empresa or '-' }}</td>
+          <td class="px-4 py-2 max-w-[180px] truncate" title="{{ m.mensaje }}">{{ m.mensaje }}</td>
+          <td class="px-4 py-2 whitespace-nowrap">{{ m.fecha.strftime("%d-%m-%Y %H:%M") }}</td>
+          <td class="px-4 py-2 text-center">
+            {% if m.leido %}
+              <span class="px-2 py-1 text-xs rounded-full bg-emerald-700/40 text-emerald-300">✔️ Leído</span>
+            {% else %}
+              <span class="px-2 py-1 text-xs rounded-full bg-amber-700/40 text-amber-300">📩 Pendiente</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-2 text-center flex flex-wrap gap-2 justify-center">
+            <!-- Toggle leído -->
+            <form method="POST" action="{{ url_for('admin.toggle_mensaje', id=m.id) }}">
+              <button type="submit"
+                class="px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 text-white">
+                {% if m.leido %}Marcar no leído{% else %}Marcar leído{% endif %}
+              </button>
+            </form>
+            <!-- Eliminar -->
+            <form method="POST" action="{{ url_for('admin.delete_mensaje', id=m.id) }}"
+                  onsubmit="return confirm('¿Seguro que deseas eliminar este mensaje?');">
+              <button type="submit"
+                class="px-2 py-1 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">
+                🗑️ Eliminar
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="9" class="px-4 py-6 text-center text-slate-400">No hay mensajes aún.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

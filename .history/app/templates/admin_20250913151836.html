@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Panel administrador · Kodesk{% endblock %}
+
+{% block content %}
+<section class="container mx-auto px-4 py-12">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold">📊 Panel administrador</h2>
+    <a href="{{ url_for('admin.logout') }}" class="btn btn-ghost">Cerrar sesión</a>
+  </div>
+
+  <!-- Tabla de mensajes -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-slate-700 text-sm">
+      <thead class="bg-slate-800 text-slate-200">
+        <tr>
+          <th class="px-3 py-2 text-left">#</th>
+          <th class="px-3 py-2 text-left">Nombre</th>
+          <th class="px-3 py-2 text-left">Email</th>
+          <th class="px-3 py-2 text-left">Teléfono</th>
+          <th class="px-3 py-2 text-left">Empresa</th>
+          <th class="px-3 py-2 text-left">Mensaje</th>
+          <th class="px-3 py-2 text-left">Fecha</th>
+          <th class="px-3 py-2 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-700">
+        {% for m in mensajes %}
+        <tr class="{% if not m.leido %}bg-slate-900/40{% endif %}">
+          <td class="px-3 py-2">{{ m.id }}</td>
+          <td class="px-3 py-2">{{ m.nombre }}</td>
+          <td class="px-3 py-2">{{ m.email }}</td>
+          <td class="px-3 py-2">{{ m.telefono or '-' }}</td>
+          <td class="px-3 py-2">{{ m.empresa or '-' }}</td>
+          <td class="px-3 py-2 max-w-xs truncate">{{ m.mensaje }}</td>
+          <td class="px-3 py-2">{{ m.fecha.strftime("%d-%m-%Y %H:%M") }}</td>
+          <td class="px-3 py-2 text-center">
+            <!-- Toggle leído -->
+            <form method="POST" action="{{ url_for('admin.toggle_mensaje', id=m.id) }}" class="inline">
+              <button type="submit" class="text-xs px-2 py-1 rounded 
+                {% if m.leido %}bg-emerald-700 hover:bg-emerald-600{% else %}bg-amber-700 hover:bg-amber-600{% endif %}">
+                {% if m.leido %}✔️ Leído{% else %}📩 No leído{% endif %}
+              </button>
+            </form>
+            <!-- Eliminar -->
+            <form method="POST" action="{{ url_for('admin.delete_mensaje', id=m.id) }}" class="inline">
+              <button type="submit" class="text-xs px-2 py-1 rounded bg-rose-700 hover:bg-rose-600">
+                🗑️ Eliminar
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="px-3 py-4 text-center text-slate-400">No hay mensajes aún.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

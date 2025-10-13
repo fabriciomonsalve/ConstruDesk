@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container mx-auto mt-10 px-4">
+    <h2 class="text-3xl font-semibold text-center text-white-800 mb-8">Editar Proyecto: {{ project.name }}</h2>
+
+    <!-- Contenedor más pequeño y centrado -->
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div class="space-y-6">
+          <!-- Nombre del Proyecto -->
+          <div class="form-group">
+            <label for="name" class="block text-sm font-medium text-gray-700">Nombre del Proyecto</label>
+            {{ form.name(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.name.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+            {{ form.description(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.description.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Fecha de Inicio -->
+          <div class="form-group">
+            <label for="start_date" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+            {{ form.start_date(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.start_date.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Fecha de Fin -->
+          <div class="form-group">
+            <label for="end_date" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+            {{ form.end_date(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.end_date.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Progreso -->
+          <div class="form-group">
+            <label for="progress" class="block text-sm font-medium text-gray-700">Progreso (%)</label>
+            {{ form.progress(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.progress.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Estado -->
+          <div class="form-group">
+            <label for="status" class="block text-sm font-medium text-gray-700">Estado</label>
+            {{ form.status(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.status.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Comentario del Administrador -->
+          <div class="form-group">
+            <label for="admin_comment" class="block text-sm font-medium text-gray-700">Comentario del Administrador</label>
+            {{ form.admin_comment(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+            {% for error in form.admin_comment.errors %}
+              <div class="text-sm text-red-500">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Botón de Enviar -->
+          <div class="text-center">
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 transition duration-300">
+              Actualizar Proyecto
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

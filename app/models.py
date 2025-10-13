@@ -1,0 +1,153 @@
+from datetime import datetime
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from . import db  # ✅ ya no genera loop
+
+# Tabla de los mensajes
+class ContactMessage(db.Model):
+    __tablename__ = "mensajes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    telefono = db.Column(db.String(20))
+    empresa = db.Column(db.String(120))
+    mensaje = db.Column(db.Text, nullable=False)
+    fecha = db.Column(db.DateTime, default=datetime.utcnow)
+    leido = db.Column(db.Boolean, default=False)  # 👈 nuevo campo
+
+
+class AdminUser(UserMixin, db.Model):
+    __tablename__ = "admin_users"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    # Relación con los roles (muchos a muchos)
+    roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
+
+    def set_password(self, password):
+        """Establece la contraseña hasheada"""
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Verifica la contraseña hasheada"""
+        return check_password_hash(self.password_hash, password)
+
+    def has_role(self, role_name):
+        """Verifica si el usuario tiene un rol específico"""
+        return any(role.name == role_name for role in self.roles)
+
+    # Métodos requeridos por Flask-Login
+    @property
+    def is_active(self):
+        """Retorna si el usuario está activo o no (debe retornar un valor booleano)"""
+        return True  # Puedes personalizarlo según lo necesites (Ej: solo activar usuarios con ciertos roles)
+
+    @property
+    def is_authenticated(self):
+        """Siempre devolverá True si el usuario está autenticado"""
+        return True
+
+    @property
+    def is_anonymous(self):
+        """Siempre devolverá False si el usuario no es anónimo"""
+        return False
+
+    def get_id(self):
+        """Devuelve el ID del usuario como string (esto es requerido por Flask-Login)"""
+        return str(self.id)
+
+
+# Tabla de roles de usuario
+class Role(db.Model):
+    __tablename__ = "roles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)  
+
+    def __repr__(self):
+        return f"<Role {self.name}>"
+
+# Tabla intermedia para gestionar la relación muchos a muchos entre usuarios y roles
+class UserRoles(db.Model):
+    __tablename__ = 'user_roles'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='CASCADE'), primary_key=True)
+
+
+class Project(db.Model):
+    __tablename__ = 'projects'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
+    description = db.Column(db.Text)
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    end_date = db.Column(db.DateTime)
+    progress = db.Column(db.Integer, default=0)
+    status = db.Column(db.String(50), default='activo')  # Ej: activo, suspendido, finalizado
+    archived = db.Column(db.Boolean, default=False)  # Indicador de archivo
+    admin_comment = db.Column(db.Text)
+    creator_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=False)
+    creator = db.relationship('AdminUser', backref='created_projects')
+    
+    def __repr__(self):
+        return f"<Project {self.name}>"
+    
+
+class ProjectUserRole(db.Model):
+    __tablename__ = 'project_user_role'
+    
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+
+    project = db.relationship('Project', backref=db.backref('user_roles', lazy=True))
+    user = db.relationship('AdminUser', backref=db.backref('user_roles', lazy=True))
+    role = db.relationship('Role')
+
+    def __repr__(self):
+        return f"<ProjectUserRole(project_id={self.project_id}, user_id={self.user_id}, role={self.role.name})>"
+
+class ProjectInvitation(db.Model):
+    __tablename__ = 'project_invitation'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), nullable=False)
+    token = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(50), default='pending')  # 'pending', 'accepted', 'declined'
+    
+    project = db.relationship('Project', backref=db.backref('invitations', lazy=True))
+    
+    def __repr__(self):
+        return f"<ProjectInvitation(email={self.email}, project_id={self.project_id}, status={self.status})>"
+
+
+
+class ProjectDocument(db.Model):
+    __tablename__ = 'project_documents'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), nullable=False)
+    file_path = db.Column(db.String(255), nullable=False)  # Ruta del archivo
+    file_name = db.Column(db.String(255), nullable=False)  # Nombre del archivo
+    version = db.Column(db.Integer, default=1)  # Versión del documento
+    upload_date = db.Column(db.DateTime, default=datetime.utcnow)
+    description = db.Column(db.Text, nullable=True)  # Descripción opcional del documento
+    
+    project = db.relationship('Project', backref=db.backref('documents', lazy=True))
+    user = db.relationship('AdminUser', backref=db.backref('uploaded_documents', lazy=True))
+
+    def __repr__(self):
+        return f"<ProjectDocument(project_id={self.project_id}, file_name={self.file_name}, version={self.version})>"
+
+
+
+
+
+

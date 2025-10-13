@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContruDesk - Control total, construcción real</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="font-sans text-gray-800">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow fixed w-full z-10">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <h1 class="text-2xl font-bold text-blue-900">ContruDesk</h1>
+      <ul class="flex space-x-6 font-semibold">
+        <li><a href="#beneficios" class="hover:text-yellow-500">Beneficios</a></li>
+        <li><a href="#funcionalidades" class="hover:text-yellow-500">Funcionalidades</a></li>
+        <li><a href="#demos" class="hover:text-yellow-500">Demo</a></li>
+        <li><a href="#contacto" class="hover:text-yellow-500">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO con VIDEO -->
+  <header class="relative h-screen w-full flex items-center justify-center text-center text-white">
+    <video autoplay muted loop playsinline class="absolute w-full h-full object-cover">
+      <source src="video-construccion.mp4" type="video/mp4">
+    </video>
+    <div class="absolute inset-0 bg-blue-900 bg-opacity-70"></div>
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <h2 class="text-5xl font-bold mb-6">Control total, construcción real</h2>
+      <p class="text-lg mb-8">La plataforma digital que transforma la gestión de tus proyectos de construcción.</p>
+      <a href="#demos" class="bg-yellow-400 text-blue-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300">Solicita tu Demo</a>
+    </div>
+  </header>
+
+  <!-- BENEFICIOS -->
+  <section id="beneficios" class="py-28 bg-gray-50">
+    <div class="container mx-auto text-center">
+      <h3 class="text-4xl font-bold text-blue-900 mb-6">Beneficios de ContruDesk</h3>
+      <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Optimiza tus proyectos con control total, comunicación fluida y datos en tiempo real.</p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="img/dashboard.png" alt="Dashboard" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Visión Global</h4>
+          <p>Monitorea todas tus obras con indicadores claros y actualizados.</p>
+        </div>
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="img/team.png" alt="Colaboración" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Colaboración</h4>
+          <p>Admins, residentes y maestros conectados en un solo sistema.</p>
+        </div>
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="img/report.png" alt="Reportes" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Reportes Automáticos</h4>
+          <p>Genera informes listos para clientes y gerencia en segundos.</p>
+        </div>
+        <div class="bg-white shadow-lg rounded-xl p-8">
+          <img src="logo.png" alt="Seguridad" class="w-20 mx-auto mb-4">
+          <h4 class="font-bold text-xl mb-2">Transparencia</h4>
+          <p>Evidencias y bitácoras digitales accesibles desde cualquier dispositivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES con imagen -->
+  <section id="funcionalidades" class="py-28">
+    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h3 class="text-4xl font-bold text-blue-900 mb-6">Funcionalidades Clave</h3>
+        <ul class="space-y-6 text-lg">
+          <li><strong>Dashboard Global:</strong> Avances físicos y financieros en tiempo real.</li>
+          <li><strong>Gestión de Obras:</strong> Cronogramas y validación de residentes.</li>
+          <li><strong>Bitácora Digital:</strong> Registro de avances, fotos y consumos desde el campo.</li>
+          <li><strong>Control de Materiales:</strong> Inventario actualizado con alertas de consumo.</li>
+          <li><strong>Seguridad y Calidad:</strong> Checklists HSE y control normativo.</li>
+        </ul>
+      </div>
+      <div>
+        <img src="img/funcionalidades.png" alt="Funcionalidades ContruDesk" class="rounded-xl shadow-lg">
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO DEMO -->
+  <section id="demos" class="py-28 bg-blue-900 text-white text-center">
+    <h3 class="text-4xl font-bold mb-6">Mira ContruDesk en acción</h3>
+    <p class="text-lg mb-12 max-w-2xl mx-auto">Descubre cómo nuestra plataforma revoluciona la gestión de proyectos de construcción.</p>
+    <div class="max-w-4xl mx-auto">
+      <iframe class="w-full h-96 rounded-xl shadow-lg" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="mt-10">
+      <a href="#contacto" class="bg-yellow-400 text-blue-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300">Agenda tu Demo</a>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="py-28 bg-gray-50">
+    <h3 class="text-4xl font-bold text-center text-blue-900 mb-6">Contáctanos</h3>
+    <p class="text-center text-lg text-gray-600 mb-12">¿Listo para transformar tu constructora? Escríbenos y agenda una demo.</p>
+    <form class="max-w-3xl mx-auto bg-white p-10 rounded-xl shadow-lg">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <label class="block mb-2 font-bold">Nombre</label>
+          <input type="text" class="w-full p-4 border rounded" placeholder="Tu nombre">
+        </div>
+        <div>
+          <label class="block mb-2 font-bold">Correo</label>
+          <input type="email" class="w-full p-4 border rounded" placeholder="tucorreo@ejemplo.com">
+        </div>
+      </div>
+      <div class="mt-6">
+        <label class="block mb-2 font-bold">Mensaje</label>
+        <textarea class="w-full p-4 border rounded" rows="5" placeholder="Cuéntanos sobre tu empresa o proyecto"></textarea>
+      </div>
+      <div class="mt-8 text-center">
+        <button class="bg-yellow-400 text-blue-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300">Enviar Mensaje</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-blue-900 text-white py-8 text-center">
+    <p>© 2025 ContruDesk | Tu escritorio digital para la construcción</p>
+    <p class="text-sm mt-2">Control total, construcción real.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+    <!-- Contenedor con fondo blanco y sombras -->
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <!-- Header del formulario -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white text-center">Asignar Usuario a Proyecto</h2>
+        <p class="text-blue-100 text-center mt-2 text-sm">Selecciona un usuario y proyecto para realizar la asignación</p>
+      </div>
+
+      <!-- Formulario -->
+      <form method="POST" action="{{ url_for('admin.assign_user_to_project') }}" class="p-8">
+        <div class="space-y-6">
+          <!-- Selección de Usuario -->
+          <div>
+            <label for="user_id" class="block text-sm font-semibold text-gray-700 mb-2">
+              <span class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Seleccionar Usuario
+              </span>
+            </label>
+            <select name="user_id" id="user_id" class="mt-1 block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 transition duration-200 hover:border-gray-400">
+              <option value="" class="text-gray-400">-- Seleccionar Usuario --</option>
+              {% for user in users %}
+                <option value="{{ user.id }}" class="text-gray-800" data-role="{{ user.roles[0].id if user.roles else '' }}" data-role-name="{{ user.roles[0].name if user.roles else 'Sin Rol' }}">
+                  {{ user.nombre }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Selección de Proyecto -->
+          <div>
+            <label for="project_id" class="block text-sm font-semibold text-gray-700 mb-2">
+              <span class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Seleccionar Proyecto
+              </span>
+            </label>
+            <select name="project_id" id="project_id" class="mt-1 block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 transition duration-200 hover:border-gray-400">
+              <option value="" class="text-gray-400">-- Seleccionar Proyecto --</option>
+              {% for project in projects %}
+                <option value="{{ project.id }}" class="text-gray-800">{{ project.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Mostrar Rol (solo lectura) -->
+          <div>
+            <label for="role_name" class="block text-sm font-semibold text-gray-700 mb-2">
+              <span class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                Rol Asignado
+              </span>
+            </label>
+            <div class="relative">
+              <input type="text" id="role_name" placeholder="El rol se mostrará automáticamente" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-gray-700 bg-gray-50 cursor-not-allowed" readonly>
+              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+            </div>
+            <!-- Campo oculto para enviar el ID del rol -->
+            <input type="hidden" name="role_id" id="role_id" value="">
+          </div>
+        </div>
+
+        <!-- Botón de Submit -->
+        <div class="mt-8">
+          <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <span class="flex items-center justify-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Asignar Usuario al Proyecto
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Mensaje de éxito/error -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="px-8 pb-8">
+            {% for category, message in messages %}
+              <div class="p-4 rounded-xl {{ 'bg-green-50 border border-green-200' if category == 'success' else 'bg-red-50 border border-red-200' }}" role="alert">
+                <div class="flex items-start">
+                  {% if category == 'success' %}
+                    <svg class="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-sm font-medium text-green-800">{{ message }}</p>
+                  {% else %}
+                    <svg class="w-5 h-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-sm font-medium text-red-800">{{ message }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+  <!-- Script para auto-llenar el rol según el usuario seleccionado -->
+  <script>
+    document.getElementById('user_id').addEventListener('change', function() {
+      var selectedOption = this.options[this.selectedIndex];
+      var role_id = selectedOption.getAttribute('data-role');
+      var role_name = selectedOption.getAttribute('data-role-name');
+
+      // Establecer el nombre del rol en el campo "role_name"
+      document.getElementById('role_name').value = role_name || 'Sin Rol';
+
+      // Establecer el ID del rol en el campo oculto "role_id"
+      document.getElementById('role_id').value = role_id || '';
+    });
+  </script>
+{% endblock %}

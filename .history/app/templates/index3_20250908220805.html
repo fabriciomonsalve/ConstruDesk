@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kodesk.cl — Consultora TI integral en Parral</title>
+  <meta name="description" content="Kodesk.cl: consultora informática integral en Parral y Región del Maule. Soporte TI, redes, ciberseguridad, desarrollo web, nube, data & IA y venta de insumos." />
+  <meta name="theme-color" content="#0A3D62" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{--brand:#0A3D62;--brand-2:#3C9DD0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'}
+    .container{max-width:1140px}
+    .glass{backdrop-filter:saturate(180%) blur(12px);background-color:rgba(255,255,255,.75)}
+    .shadow-soft{box-shadow:0 10px 30px rgba(0,0,0,.08)}
+  </style>
+</head>
+<body class="antialiased text-slate-800">
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 bg-white/90 glass shadow-soft">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <a href="#" class="flex items-center gap-2">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="text-[--brand]">
+            <path d="M4 6h10a4 4 0 0 1 0 8H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 14H6v4M6 10h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-extrabold text-xl tracking-tight">Kodesk<span class="text-[--brand]">.cl</span></span>
+        </a>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="#servicios" class="hover:text-[--brand]">Servicios</a>
+          <a href="#valor" class="hover:text-[--brand]">Por qué Kodesk</a>
+          <a href="#catalogo" class="hover:text-[--brand]">Catálogo</a>
+          <a href="#blog" class="hover:text-[--brand]">Blog</a>
+          <a href="#contacto" class="hover:text-[--brand]">Contacto</a>
+          <a href="#contacto" class="inline-flex items-center rounded-xl bg-[--brand] px-4 py-2 text-white shadow-soft hover:bg-[#08324f]">Cotiza ahora</a>
+        </nav>
+        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200">
+          <span class="sr-only">Abrir menú</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden pb-4">
+        <div class="grid gap-2 text-sm font-medium">
+          <a href="#servicios" class="px-2 py-2 rounded-lg hover:bg-slate-50">Servicios</a>
+          <a href="#valor" class="px-2 py-2 rounded-lg hover:bg-slate-50">Por qué Kodesk</a>
+          <a href="#catalogo" class="px-2 py-2 rounded-lg hover:bg-slate-50">Catálogo</a>
+          <a href="#blog" class="px-2 py-2 rounded-lg hover:bg-slate-50">Blog</a>
+          <a href="#contacto" class="px-2 py-2 rounded-lg hover:bg-slate-50">Contacto</a>
+          <a href="#contacto" class="px-2 py-2 rounded-lg text-center bg-[--brand] text-white">Cotiza ahora</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-[--brand] via-[#0c4f78] to-[--brand-2]"></div>
+    <div class="container mx-auto px-4 py-20 md:py-28">
+      <div class="grid md:grid-cols-2 items-center gap-10">
+        <div class="text-white">
+          <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Impulsamos tu negocio con soluciones TI a medida</h1>
+          <p class="mt-4 text-white/90 text-lg">Consultora informática integral en Parral y Región del Maule: soporte, redes, ciberseguridad, desarrollo web, nube, data & IA y venta de insumos.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#contacto" class="inline-flex items-center rounded-xl bg-white text-[--brand] px-5 py-3 font-semibold shadow-soft hover:opacity-90">Solicita asesoría</a>
+            <a href="#servicios" class="inline-flex items-center rounded-xl border border-white/70 text-white px-5 py-3 font-semibold hover:bg-white/10">Ver servicios</a>
+          </div>
+          <div class="mt-6 flex items-center gap-6 text-white/80 text-sm">
+            <div class="flex items-center gap-2"><span class="font-bold">+50</span> proyectos</div>
+            <div class="flex items-center gap-2">Soporte local en Parral</div>
+            <div class="flex items-center gap-2">Atención a PYMEs</div>
+          </div>
+        </div>
+        <div>
+          <div class="relative rounded-2xl bg-white/10 p-2 shadow-soft ring-1 ring-white/20">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1600&auto=format&fit=crop" alt="Tecnología y soporte TI" class="rounded-xl w-full h-[320px] object-cover" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section id="servicios" class="py-16 md:py-24 bg-slate-50">
+    <div class="container mx-auto px-4">
+      <div class="flex items-end justify-between mb-10">
+        <h2 class="text-3xl md:text-4xl font-extrabold">Servicios clave</h2>
+        <a href="#contacto" class="hidden md:inline-flex text-[--brand] font-semibold hover:underline">Cotiza un proyecto →</a>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card -->
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <div class="h-12 w-12 rounded-xl bg-[--brand]/10 flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 7h6M9 11h6M9 15h6M5 7h.01M5 11h.01M5 15h.01" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold">Soporte & Mantenimiento</h3>
+          <p class="mt-2 text-slate-600">Instalación, configuración y soporte remoto/presencial. Planes mensuales y bolsa de horas.</p>
+          <a href="#contacto" class="mt-4 inline-flex text-[--brand] font-semibold hover:underline">Más info</a>
+        </article>
+        <!-- Card -->
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <div class="h-12 w-12 rounded-xl bg-[--brand]/10 flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M12 3v18" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold">Redes & Telecom</h3>
+          <p class="mt-2 text-slate-600">LAN/WiFi, VPN, firewalls, telefonía IP y videovigilancia con monitoreo.</p>
+          <a href="#contacto" class="mt-4 inline-flex text-[--brand] font-semibold hover:underline">Más info</a>
+        </article>
+        <!-- Card -->
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <div class="h-12 w-12 rounded-xl bg-[--brand]/10 flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4zM8 10h8" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold">Desarrollo Web & Software</h3>
+          <p class="mt-2 text-slate-600">Sitios, e‑commerce, integraciones ERP/CRM y automatización de procesos.</p>
+          <a href="#contacto" class="mt-4 inline-flex text-[--brand] font-semibold hover:underline">Más info</a>
+        </article>
+        <!-- Card -->
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <div class="h-12 w-12 rounded-xl bg-[--brand]/10 flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 15a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v6z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold">Nube & Virtualización</h3>
+          <p class="mt-2 text-slate-600">Google Workspace, Microsoft 365, servidores virtuales y backups en la nube.</p>
+          <a href="#contacto" class="mt-4 inline-flex text-[--brand] font-semibold hover:underline">Más info</a>
+        </article>
+        <!-- Card -->
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <div class="h-12 w-12 rounded-xl bg-[--brand]/10 flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 1v4M12 19v4M4.2 4.2l2.9 2.9M16.9 16.9l2.9 2.9M1 12h4M19 12h4M4.2 19.8l2.9-2.9M16.9 7.1l2.9-2.9" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold">Ciberseguridad</h3>
+          <p class="mt-2 text-slate-600">Auditorías, hardening, políticas de acceso y capacitación al equipo.</p>
+          <a href="#contacto" class="mt-4 inline-flex text-[--brand] font-semibold hover:underline">Más info</a>
+        </article>
+        <!-- Card -->
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <div class="h-12 w-12 rounded-xl bg-[--brand]/10 flex items-center justify-center mb-4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20s8-4 8-10a8 8 0 1 0-16 0c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold">Data & IA</h3>
+          <p class="mt-2 text-slate-600">BI, dashboards, analítica predictiva e IA aplicada a procesos.</p>
+          <a href="#contacto" class="mt-4 inline-flex text-[--brand] font-semibold hover:underline">Más info</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROPUESTA DE VALOR -->
+  <section id="valor" class="py-16">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="rounded-2xl p-6 ring-1 ring-slate-200 bg-white shadow-soft">
+          <h4 class="text-lg font-bold">Innovación para PYMEs</h4>
+          <p class="mt-2 text-slate-600">Tecnología de nivel empresarial, adaptada a tu presupuesto y crecimiento.</p>
+        </div>
+        <div class="rounded-2xl p-6 ring-1 ring-slate-200 bg-white shadow-soft">
+          <h4 class="text-lg font-bold">Seguridad garantizada</h4>
+          <p class="mt-2 text-slate-600">Buenas prácticas, monitoreo y cumplimiento para dormir tranquilo.</p>
+        </div>
+        <div class="rounded-2xl p-6 ring-1 ring-slate-200 bg-white shadow-soft">
+          <h4 class="text-lg font-bold">Soporte cercano</h4>
+          <p class="mt-2 text-slate-600">Atención local en Parral y Región del Maule, con tiempos de respuesta reales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section class="py-16 bg-slate-50">
+    <div class="container mx-auto px-4">
+      <div class="mb-10">
+        <h2 class="text-3xl md:text-4xl font-extrabold">Lo que dicen nuestros clientes</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <figure class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <blockquote class="text-slate-700">“Kodesk modernizó nuestra infraestructura y hoy operamos 100% en la nube.”</blockquote>
+          <figcaption class="mt-4 text-sm text-slate-500">— Comercial Valleverde</figcaption>
+        </figure>
+        <figure class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <blockquote class="text-slate-700">“Pasamos de planillas a dashboards con BI. Decisiones más rápidas y seguras.”</blockquote>
+          <figcaption class="mt-4 text-sm text-slate-500">— Agro Maule</figcaption>
+        </figure>
+        <figure class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <blockquote class="text-slate-700">“Excelente soporte y respuesta. Nuestro e‑commerce no se detiene.”</blockquote>
+          <figcaption class="mt-4 text-sm text-slate-500">— FerreRed</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO -->
+  <section id="catalogo" class="py-16">
+    <div class="container mx-auto px-4">
+      <div class="flex items-end justify-between mb-10">
+        <h2 class="text-3xl md:text-4xl font-extrabold">Catálogo destacado</h2>
+        <a href="#contacto" class="hidden md:inline-flex text-[--brand] font-semibold hover:underline">Ver catálogo completo →</a>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="rounded-2xl border border-slate-200 p-5 hover:shadow-soft">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop" alt="Notebook empresarial" class="rounded-xl h-44 w-full object-cover" />
+          <h3 class="mt-4 font-semibold">Notebook empresarial</h3>
+          <p class="text-sm text-slate-600">Equipos para teletrabajo con garantía local.</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="font-bold text-[--brand]">Desde 20 UF</span>
+            <a href="#contacto" class="text-sm font-semibold text-[--brand] hover:underline">Cotizar</a>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5 hover:shadow-soft">
+          <img src="https://images.unsplash.com/photo-1587202372634-32705e3bf49d?q=80&w=1200&auto=format&fit=crop" alt="Router empresarial" class="rounded-xl h-44 w-full object-cover" />
+          <h3 class="mt-4 font-semibold">Red & Seguridad</h3>
+          <p class="text-sm text-slate-600">Routers, firewalls y switches administrables.</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="font-bold text-[--brand]">Desde 5 UF</span>
+            <a href="#contacto" class="text-sm font-semibold text-[--brand] hover:underline">Cotizar</a>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5 hover:shadow-soft">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop" alt="Servidor" class="rounded-xl h-44 w-full object-cover" />
+          <h3 class="mt-4 font-semibold">Servidores & Backup</h3>
+          <p class="text-sm text-slate-600">On‑premise o nube híbrida con respaldo.</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="font-bold text-[--brand]">Desde 40 UF</span>
+            <a href="#contacto" class="text-sm font-semibold text-[--brand] hover:underline">Cotizar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-gradient-to-r from-[--brand] to-[--brand-2]">
+    <div class="container mx-auto px-4 text-center text-white">
+      <h2 class="text-3xl md:text-4xl font-extrabold">¿Listo para llevar tu empresa al siguiente nivel?</h2>
+      <p class="mt-3 text-white/90">Agenda una asesoría sin costo y recibe un diagnóstico inicial.</p>
+      <a href="#contacto" class="mt-6 inline-flex rounded-xl bg-white px-6 py-3 font-semibold text-[--brand] shadow-soft hover:opacity-90">Agendar ahora</a>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section id="blog" class="py-16 bg-slate-50">
+    <div class="container mx-auto px-4">
+      <div class="mb-10">
+        <h2 class="text-3xl md:text-4xl font-extrabold">Novedades & Blog</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <h3 class="font-semibold">Tendencias TI 2025 para PYMEs</h3>
+          <p class="mt-2 text-sm text-slate-600">Lo imprescindible para digitalizar tu negocio sin gastar de más.</p>
+          <a href="#" class="mt-3 inline-flex text-[--brand] text-sm font-semibold hover:underline">Leer más</a>
+        </article>
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <h3 class="font-semibold">Guía de ciberseguridad básica</h3>
+          <p class="mt-2 text-sm text-slate-600">Buenas prácticas para proteger datos y continuidad operacional.</p>
+          <a href="#" class="mt-3 inline-flex text-[--brand] text-sm font-semibold hover:underline">Leer más</a>
+        </article>
+        <article class="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <h3 class="font-semibold">Por qué migrar a la nube hoy</h3>
+          <p class="mt-2 text-sm text-slate-600">Escalabilidad, seguridad y ahorro con soluciones cloud.</p>
+          <a href="#" class="mt-3 inline-flex text-[--brand] text-sm font-semibold hover:underline">Leer más</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="py-16">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-10 items-start">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-extrabold">Conversemos</h2>
+          <p class="mt-3 text-slate-600">Cuéntanos sobre tu proyecto y te responderemos en menos de 24 horas hábiles.</p>
+          <ul class="mt-6 space-y-2 text-slate-700">
+            <li>📍 Parral, Región del Maule</li>
+            <li>📞 +56 9 5555 5555</li>
+            <li>📧 hola@kodesk.cl</li>
+          </ul>
+          <div class="mt-6 flex gap-3">
+            <a href="https://wa.me/56955555555" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 hover:bg-slate-50" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="#" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 hover:bg-slate-50">LinkedIn</a>
+          </div>
+        </div>
+        <form class="rounded-2xl p-6 bg-white shadow-soft ring-1 ring-slate-100">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium">Nombre</label>
+              <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="Tu nombre" />
+            </div>
+            <div>
+              <label class="text-sm font-medium">Email</label>
+              <input type="email" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="tunombre@empresa.cl" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium">Empresa</label>
+              <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="Nombre de empresa" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium">¿Cómo podemos ayudar?</label>
+              <textarea rows="4" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="Cuéntanos sobre tu proyecto"></textarea>
+            </div>
+          </div>
+          <button type="button" class="mt-4 inline-flex rounded-xl bg-[--brand] px-5 py-3 font-semibold text-white hover:bg-[#08324f]">Enviar consulta</button>
+          <p class="mt-2 text-xs text-slate-500">Al enviar aceptas nuestra política de privacidad.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200">
+    <div class="container mx-auto px-4 py-10 grid md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-[--brand]"><path d="M4 6h10a4 4 0 0 1 0 8H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14H6v4M6 10h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="font-extrabold text-lg tracking-tight">Kodesk<span class="text-[--brand]">.cl</span></span>
+        </div>
+        <p class="mt-3 text-sm text-slate-600">Consultora TI integral en Parral y Región del Maule.</p>
+      </div>
+      <div>
+        <h4 class="font-bold">Servicios</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#servicios" class="hover:underline">Soporte TI</a></li>
+          <li><a href="#servicios" class="hover:underline">Redes & Seguridad</a></li>
+          <li><a href="#servicios" class="hover:underline">Desarrollo Web</a></li>
+          <li><a href="#servicios" class="hover:underline">Nube & Backups</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold">Empresa</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#valor" class="hover:underline">Por qué Kodesk</a></li>
+          <li><a href="#blog" class="hover:underline">Blog</a></li>
+          <li><a href="#contacto" class="hover:underline">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold">Contacto</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li>📍 Parral, Región del Maule</li>
+          <li>📧 hola@kodesk.cl</li>
+          <li>📞 +56 9 5555 5555</li>
+        </ul>
+      </div>
+    </div>
+    <div class="py-6 text-center text-xs text-slate-500">© <span id="year"></span> Kodesk.cl — Todos los derechos reservados.</div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if(menuBtn){menuBtn.addEventListener('click',()=>mobileMenu.classList.toggle('hidden'))}
+  </script>
+</body>
+</html>

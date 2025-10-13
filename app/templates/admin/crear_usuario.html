@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container max-w-4xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Crear Nuevo Usuario</h2>
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <div class="space-y-6">
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+          {{ form.nombre(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.nombre.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Correo Electrónico -->
+        <div class="form-group">
+          <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+          {{ form.email(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.email.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+          {{ form.password(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.password.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Rol -->
+        <div class="form-group">
+          <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
+          {{ form.rol(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
+          {% for error in form.rol.errors %}
+            <div class="text-sm text-red-500">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Botón de envío -->
+        <div class="text-center">
+          <button type="submit" class="w-full bg-[#1e3a8a] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#1e40af] focus:outline-none focus:ring-4 focus:ring-blue-500 transition duration-300">
+            Crear Usuario
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

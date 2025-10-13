@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mx-auto mt-6 sm:mt-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
+  <!-- Header del Proyecto -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-6">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{{ project.name }}</h2>
+    <p class="text-base sm:text-lg text-gray-600 leading-relaxed">{{ project.description }}</p>
+  </div>
+
+  <!-- Grid de Información del Proyecto -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <!-- Fecha de Inicio -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-center mb-2">
+        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Fecha de Inicio</p>
+          <p class="text-base font-semibold text-gray-900">{{ project.start_date.strftime('%Y-%m-%d') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fecha de Fin -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-center mb-2">
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Fecha de Fin</p>
+          <p class="text-base font-semibold text-gray-900">{{ project.end_date.strftime('%Y-%m-%d') if project.end_date else 'N/A' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-center mb-2">
+        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Estado</p>
+          <p class="text-base font-semibold text-gray-900">{{ project.status }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Usuarios Asignados -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+      <h3 class="text-xl sm:text-2xl font-bold text-gray-900">Usuarios Asignados</h3>
+    </div>
+    
+    <!-- Versión Desktop -->
+    <div class="hidden sm:block overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Usuario</th>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Rol</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for user_role in users_in_project %}
+            <tr class="hover:bg-gray-50 transition-colors duration-150">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm mr-3">
+                    {{ user_role.user.nombre[0].upper() }}
+                  </div>
+                  <div class="text-sm font-medium text-gray-900">{{ user_role.user.nombre }}</div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {{ user_role.role.name }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Versión Mobile -->
+    <div class="sm:hidden divide-y divide-gray-200">
+      {% for user_role in users_in_project %}
+        <div class="px-6 py-4 hover:bg-gray-50 transition-colors duration-150">
+          <div class="flex items-center mb-3">
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-base mr-3">
+              {{ user_role.user.nombre[0].upper() }}
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">{{ user_role.user.nombre }}</p>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                {{ user_role.role.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

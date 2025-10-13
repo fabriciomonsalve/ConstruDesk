@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+{% block title %}Login administrador · Kodesk{% endblock %}
+
+{% block content %}
+<!-- ===== Fondo con video tecnológico ===== -->
+<section class="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
+  <!-- Video de fondo -->
+  <video
+    class="absolute inset-0 w-full h-full object-cover"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster="{{ url_for('static', filename='images/tech-poster.jpg') }}"
+  >
+    <source src="{{ url_for('static', filename='video.mp4') }}" type="video/mp4" />
+  </video>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-slate-950/70"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/20 via-transparent to-[var(--brand-2)]/20"></div>
+
+  <!-- ===== Card de login ===== -->
+  <div class="relative w-full max-w-md mx-4">
+    <div class="backdrop-blur-xl bg-slate-900/60 border border-slate-700/60 rounded-2xl shadow-2xl">
+      <!-- Cabecera -->
+      <div class="px-8 pt-8 text-center">
+        <a href="{{ url_for('main.index') }}" class="inline-flex items-center gap-3">
+          <img src="{{ url_for('static', filename='kodesk.png') }}" alt="Kodesk" class="h-10 w-10 rounded-md shadow" />
+          <div class="text-xl font-bold">Contru<span class="text-slate-400">DESK</span></div>
+        </a>
+        <h1 class="mt-5 text-2xl font-extrabold">PERFIL ADMIN</h1>
+        <p class="mt-1 text-sm text-slate-400">Acceso restringido · Panel de administración</p>
+      </div>
+
+      <!-- Mensajes flash -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="px-8 mt-4 space-y-2">
+            {% for category, message in messages %}
+              <div class="text-sm rounded-lg px-4 py-2 border
+                          {% if category == 'success' %} border-emerald-600/40 bg-emerald-600/10 text-emerald-200
+                          {% elif category in ['error','danger'] %} border-rose-600/40 bg-rose-600/10 text-rose-200
+                          {% else %} border-slate-600/40 bg-slate-800/40 text-slate-200 {% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Formulario -->
+      <form method="POST" action="{{ url_for('admin.login') }}" class="px-8 pt-6 pb-8 space-y-4" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- Usuario / Email -->
+        <div>
+          <label for="username" class="block text-sm font-medium mb-1">Usuario o email</label>
+          {{ form.username(class="w-full rounded-xl border px-3 py-2 bg-slate-900 border-slate-700 
+                                     focus:outline-none focus:ring-2 focus:ring-[var(--brand-2)]",
+                           id="username", placeholder="kodesk@empresa.cl") }}
+          {% if form.username.errors %}
+            <p class="mt-1 text-xs text-rose-300">{{ form.username.errors[0] }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Clave -->
+        <div>
+          <label for="password" class="block text-sm font-medium mb-1">Clave</label>
+          <div class="relative">
+            {{ form.password(class="w-full rounded-xl border pl-3 pr-10 py-2 bg-slate-900 border-slate-700 
+                                       focus:outline-none focus:ring-2 focus:ring-[var(--brand-2)]",
+                             id="password", type="password", autocomplete="current-password") }}
+            {% if form.password.errors %}
+              <p class="mt-1 text-xs text-rose-300">{{ form.password.errors[0] }}</p>
+            {% endif %}
+            <!-- Toggle mostrar/ocultar -->
+            <button type="button" id="togglePass"
+                    class="absolute inset-y-0 right-2 my-auto h-8 w-8 grid place-items-center rounded-lg 
+                           text-slate-400 hover:text-slate-200"
+                    aria-label="Mostrar u ocultar contraseña">
+              <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                   viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Opciones -->
+        <div class="flex items-center justify-between pt-1">
+          <label class="inline-flex items-center gap-2 text-sm text-slate-300 select-none">
+            <input type="checkbox" name="remember" class="rounded border-slate-600 bg-slate-900 text-[var(--brand-2)] focus:ring-[var(--brand-2)]">
+            Recuérdame
+          </label>
+        </div>
+
+        <!-- Botón -->
+        <button type="submit"
+                class="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand)]
+                       px-5 py-3 font-semibold text-white hover:bg-[#08324f] focus:outline-none 
+                       focus:ring-2 focus:ring-offset-2 focus:ring-[var(--brand-2)] focus:ring-offset-slate-900"
+                id="loginBtn">
+          <svg id="btnSpinner" class="hidden h-5 w-5 animate-spin" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4A4 4 0 008 12H4z"></path>
+          </svg>
+          Ingresar
+        </button>
+
+        <!-- Nota -->
+        <p class="mt-2 text-xs text-slate-400 text-center">
+          Acceso exclusivo para personal autorizado. Todas las acciones pueden ser registradas.
+        </p>
+      </form>
+    </div>
+
+    <p class="mt-6 text-center text-xs text-slate-400">
+      © {{ config.STORE_NAME or 'Kodesk.cl' }} — Panel Admin
+    </p>
+  </div>
+</section>
+
+<!-- JS -->
+<script>
+  (function () {
+    const pass = document.getElementById('password');
+    const toggle = document.getElementById('togglePass');
+    const btn = document.getElementById('loginBtn');
+    const spinner = document.getElementById('btnSpinner');
+
+    if (toggle && pass) {
+      toggle.addEventListener('click', () => {
+        const isPwd = pass.getAttribute('type') === 'password';
+        pass.setAttribute('type', isPwd ? 'text' : 'password');
+        toggle.classList.toggle('text-white', isPwd);
+      });
+    }
+
+    if (btn) {
+      btn.closest('form')?.addEventListener('submit', () => {
+        spinner?.classList.remove('hidden');
+        btn.setAttribute('disabled', 'true');
+      });
+    }
+  })();
+</script>
+{% endblock %}
