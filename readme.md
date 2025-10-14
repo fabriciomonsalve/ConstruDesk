@@ -11,9 +11,7 @@ Incluye módulos para manejo de usuarios, control de tareas, reportes y panel de
 Construdesk/
 ├── .env
 ├── config.py
-├── crearusers.py
 ├── kodesk.db
-├── querybd.py
 ├── readme.md
 ├── requirements.txt
 ├── run.py
@@ -31,23 +29,8 @@ Construdesk/
 │   │   ├── lector.py
 │   │   ├── miembro.py
 │   ├── static/
-│   │   ├── gruas.mp4
-│   │   ├── kodesk.png
-│   │   ├── logo.png
-│   │   ├── video.mp4
 │   │   ├── logos/
-│   │   │   ├── agrodesk.png
-│   │   │   ├── indepsalud.png
-│   │   │   ├── kodesk.png
-│   │   │   ├── leucodeops.png
-│   │   │   ├── ptraker.png
-│   │   │   ├── vet.png
 │   │   ├── uploads/
-│   │   │   ├── Diamante.jpg
-│   │   │   ├── Diamante_1.jpg
-│   │   │   ├── MaderaAntigua.jpg
-│   │   │   ├── prueba12.jfif
-│   │   │   ├── resort.jpeg
 │   ├── templates/
 │   │   ├── index.html
 │   │   ├── layout.html
