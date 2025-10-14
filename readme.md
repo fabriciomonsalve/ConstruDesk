@@ -168,7 +168,7 @@ http://127.0.0.1:5000
 ## 🪪 Licencia
 
 Este proyecto está bajo la licencia MIT.  
-Puedes usarlo y modificarlo libremente, siempre dando crédito a los autores originales.
+
 
 ---
 
