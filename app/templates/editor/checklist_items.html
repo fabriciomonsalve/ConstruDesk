@@ -1,0 +1,179 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-blue-100">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-3 bg-blue-600 rounded-xl shadow-sm">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4"/>
+                </svg>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Checklist del Proyecto</h1>
+            </div>
+            <p class="text-blue-600 ml-0 sm:ml-16">{{ project.name }}</p>
+          </div>
+          
+          <!-- Agregar Ítem Button -->
+          <a href="{{ url_for('editor.nuevo_checklist_item', project_id=project.id) }}" 
+             class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-all duration-200 shadow-md hover:shadow-lg group whitespace-nowrap">
+            <div class="p-1 bg-white/20 rounded-lg">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+            <span>Agregar Ítem</span>
+            <svg class="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      {% if items %}
+        <!-- Stats Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-blue-600 rounded-lg">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586l5.414 5.414V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-blue-600 font-medium">Total</p>
+                <p class="text-2xl font-bold text-blue-900">{{ items|length }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-blue-500 rounded-lg">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-blue-600 font-medium">Activos</p>
+                <p class="text-2xl font-bold text-blue-900">{{ items|selectattr('is_active')|list|length }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-blue-300 rounded-lg">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-blue-500 font-medium">Inactivos</p>
+                <p class="text-2xl font-bold text-blue-900">{{ items|rejectattr('is_active')|list|length }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist Items -->
+        <div class="space-y-3">
+          {% for item in items %}
+            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-blue-100 overflow-hidden group">
+              <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                
+                <!-- Checkbox Icon -->
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center
+                    {% if item.is_active %}
+                      bg-blue-50 border-2 border-blue-500
+                    {% else %}
+                      bg-gray-100 border-2 border-gray-300
+                    {% endif %}">
+                    {% if item.is_active %}
+                      <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    {% else %}
+                      <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Item Text -->
+                <div class="flex-1 min-w-0">
+                  <p class="text-base sm:text-lg font-medium text-gray-900 
+                    {% if not item.is_active %}line-through text-gray-500{% endif %}">
+                    {{ item.item_text }}
+                  </p>
+                </div>
+
+                <!-- Status Badge & Action -->
+                <div class="flex items-center gap-3 flex-shrink-0">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full
+                    {% if item.is_active %}
+                      bg-blue-100 text-blue-700
+                    {% else %}
+                      bg-gray-100 text-gray-700
+                    {% endif %}">
+                    <span class="w-1.5 h-1.5 rounded-full
+                      {% if item.is_active %}
+                        bg-blue-600
+                      {% else %}
+                        bg-gray-500
+                      {% endif %}">
+                    </span>
+                    {{ 'Activo' if item.is_active else 'Inactivo' }}
+                  </span>
+
+                  <a href="{{ url_for('editor.toggle_checklist_item', project_id=project.id, item_id=item.id) }}" 
+                     class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r
+                       {% if item.is_active %}
+                         from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
+                       {% else %}
+                         from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600
+                       {% endif %}
+                       rounded-lg text-sm font-medium text-white transition-all duration-200 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    <span class="hidden sm:inline">{{ 'Desactivar' if item.is_active else 'Activar' }}</span>
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">No hay ítems en el checklist</h3>
+          <p class="text-gray-500 max-w-md mx-auto mb-6">Comienza a organizar tu proyecto agregando ítems al checklist.</p>
+          <a href="{{ url_for('editor.nuevo_checklist_item', project_id=project.id) }}" 
+             class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-all duration-200 shadow-md hover:shadow-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            <span>Agregar Primer Ítem</span>
+          </a>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

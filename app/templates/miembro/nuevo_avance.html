@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 lg:p-10">
+            
+            <!-- Encabezado -->
+            <div class="mb-8 pb-6 border-b border-gray-200">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="p-2.5 bg-blue-100 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Nuevo avance</h2>
+                </div>
+                <p class="text-gray-600 text-sm sm:text-base">Proyecto: <span class="font-semibold text-gray-900">{{ project.name }}</span></p>
+            </div>
+
+            <!-- Formulario -->
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {{ form.hidden_tag() }}
+
+                <!-- Campo de descripción -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-900 mb-2">
+                        {{ form.description.label.text }}
+                    </label>
+                    {{ form.description(class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all duration-200 resize-none", rows="5", placeholder="Describe los avances realizados, tareas completadas, obstáculos encontrados...") }}
+                    {% if form.description.errors %}
+                        <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            {% for error in form.description.errors %}
+                                <p class="text-sm text-red-700">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo de fotos -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-900 mb-2">
+                        {{ form.photos.label.text }}
+                    </label>
+                    
+                    <!-- Drag & Drop Area -->
+                    <div id="dropZone" class="relative border-2 border-dashed border-gray-300 rounded-xl p-6 sm:p-8 text-center hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-200 cursor-pointer group">
+                        <input type="file" id="photoInput" name="photos" multiple accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                        
+                        <div class="flex flex-col items-center">
+                            <div class="p-3 bg-gray-100 rounded-lg mb-3 group-hover:bg-blue-100 transition-colors">
+                                <svg class="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm font-medium text-gray-900">Arrastra fotos aquí</p>
+                            <p class="text-xs text-gray-500 mt-1">o haz clic para seleccionar</p>
+                        </div>
+                    </div>
+
+                    <!-- Vista previa de fotos -->
+                    <div id="previewContainer" class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 hidden">
+                        <div id="previewList"></div>
+                    </div>
+
+                    {% if form.photos.errors %}
+                        <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            {% for error in form.photos.errors %}
+                                <p class="text-sm text-red-700">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Botón de envío -->
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base">
+                        Publicar avance
+                    </button>
+                    <a href="javascript:history.back()" class="py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-xl transition-all duration-200 text-sm sm:text-base">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const photoInput = document.getElementById('photoInput');
+const previewContainer = document.getElementById('previewContainer');
+const previewList = document.getElementById('previewList');
+
+// Click to select
+dropZone.addEventListener('click', () => photoInput.click());
+
+// Drag over
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-blue-400', 'bg-blue-50');
+});
+
+// Drag leave
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+});
+
+// Drop
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+    photoInput.files = e.dataTransfer.files;
+    handleFileSelect({ target: { files: e.dataTransfer.files } });
+});
+
+function handleFileSelect(event) {
+    const files = event.target.files;
+    if (files.length === 0) {
+        previewContainer.classList.add('hidden');
+        return;
+    }
+
+    previewList.innerHTML = '';
+    let validFiles = 0;
+
+    Array.from(files).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.createElement('div');
+                preview.className = 'relative group aspect-square rounded-lg overflow-hidden bg-gray-100';
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                        <button type="button" onclick="removePreview(this)" class="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                previewList.appendChild(preview);
+            };
+            reader.readAsDataURL(file);
+            validFiles++;
+        }
+    });
+
+    if (validFiles > 0) {
+        previewContainer.classList.remove('hidden');
+    }
+}
+
+function removePreview(btn) {
+    btn.closest('.group').remove();
+    if (previewList.children.length === 0) {
+        previewContainer.classList.add('hidden');
+        photoInput.value = '';
+    }
+}
+</script>
+{% endblock %}

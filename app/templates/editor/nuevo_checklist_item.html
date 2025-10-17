@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 lg:p-10">
+            
+            <!-- Encabezado -->
+            <div class="mb-8 pb-6 border-b border-gray-200">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="p-2.5 bg-blue-100 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Nuevo ítem de checklist</h2>
+                </div>
+                <p class="text-gray-600 text-sm sm:text-base">Proyecto: <span class="font-semibold text-gray-900">{{ project.name }}</span></p>
+            </div>
+
+            <!-- Formulario -->
+            <form method="POST" class="space-y-6">
+                {{ form.hidden_tag() }}
+
+                <!-- Campo de texto -->
+                <div>
+                    <label for="item_text" class="block text-sm font-semibold text-gray-900 mb-2">
+                        Texto del ítem
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            name="item_text" 
+                            id="item_text"
+                            class="w-full px-4 py-3 text-sm border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all duration-200"
+                            placeholder="Describe la tarea que deseas agregar al checklist..."
+                            required
+                            maxlength="200"
+                            oninput="updateCharCount()">
+                        <span id="charCount" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">0/200</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Sé específico y claro con la descripción de la tarea.</p>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex gap-3 pt-4">
+                    <button 
+                        type="submit" 
+                        class="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base flex items-center justify-center gap-2 group">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>Agregar ítem</span>
+                    </button>
+                    <a href="javascript:history.back()" class="py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-xl transition-all duration-200 text-sm sm:text-base">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+
+            <!-- Info Card -->
+            <div class="mt-8 p-4 sm:p-5 bg-blue-50 border border-blue-200 rounded-xl">
+                <div class="flex gap-3">
+                    <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <p class="text-xs sm:text-sm text-blue-900">
+                        <span class="font-semibold">Consejo:</span> Crea ítems pequeños y específicos para que el checklist sea más útil y motivador. Cada tarea completada mejorará tu progreso diario.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function updateCharCount() {
+    const input = document.getElementById('item_text');
+    const charCount = document.getElementById('charCount');
+    charCount.textContent = input.value.length + '/200';
+    
+    // Cambiar color si está cerca del límite
+    if (input.value.length > 150) {
+        charCount.classList.add('text-orange-500');
+    } else {
+        charCount.classList.remove('text-orange-500');
+    }
+}
+
+// Inicializar contador
+document.addEventListener('DOMContentLoaded', updateCharCount);
+</script>
+{% endblock %}

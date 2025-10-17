@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="p-3 bg-blue-600 rounded-xl">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">Avance de Obra</h1>
+        </div>
+        <p class="text-gray-600 ml-16">Gestiona evidencias y checklist de tus proyectos</p>
+      </div>
+
+      {% if proyectos %}
+        <!-- Projects Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for p in proyectos %}
+            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 group">
+              
+              <!-- Header Card -->
+              <div class="p-6 border-b border-gray-100">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{{ p.name }}</h3>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full
+                      {% if p.status == 'activo' %} bg-green-100 text-green-700
+                      {% elif p.status == 'en progreso' %} bg-blue-100 text-blue-700
+                      {% elif p.status == 'completado' %} bg-gray-100 text-gray-700
+                      {% else %} bg-yellow-100 text-yellow-700
+                      {% endif %}">
+                      <span class="w-1.5 h-1.5 rounded-full
+                        {% if p.status == 'activo' %} bg-green-500
+                        {% elif p.status == 'en progreso' %} bg-blue-500
+                        {% elif p.status == 'completado' %} bg-gray-500
+                        {% else %} bg-yellow-500
+                        {% endif %}">
+                      </span>
+                      {{ p.status|capitalize }}
+                    </span>
+                  </div>
+                  <div class="p-2 bg-gray-50 rounded-lg">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                <!-- Description -->
+                <p class="text-sm text-gray-600 line-clamp-2">
+                  {{ p.description or "Sin descripción disponible" }}
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="p-6 bg-gray-50 space-y-3">
+                <!-- Gestionar Checklist -->
+                <a href="{{ url_for('editor.checklist_items', project_id=p.id) }}" 
+                   class="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-700 transition-all duration-200 group/btn">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-50 group-hover/btn:bg-blue-100 rounded-lg transition-colors">
+                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                      </svg>
+                    </div>
+                    <span>Gestionar Checklist</span>
+                  </div>
+                  <svg class="w-4 h-4 text-gray-400 group-hover/btn:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+
+                <!-- Ver Avances -->
+                <a href="{{ url_for('editor.listar_avances', project_id=p.id) }}" 
+                   class="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-200 hover:border-cyan-300 hover:bg-cyan-50 rounded-lg text-sm font-medium text-gray-700 hover:text-cyan-700 transition-all duration-200 group/btn">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-cyan-50 group-hover/btn:bg-cyan-100 rounded-lg transition-colors">
+                      <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                    </div>
+                    <span>Ver Avances</span>
+                  </div>
+                  <svg class="w-4 h-4 text-gray-400 group-hover/btn:text-cyan-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+
+                <!-- Nuevo Avance -->
+                <a href="{{ url_for('editor.nuevo_avance', project_id=p.id) }}" 
+                   class="flex items-center justify-between w-full px-4 py-3 bg-blue-600 hover:bg-blue-800 rounded-lg text-sm font-medium text-white transition-all duration-200 shadow-md hover:shadow-lg group/btn">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-white bg-opacity-20 rounded-lg">
+                      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                      </svg>
+                    </div>
+                    <span>Nuevo Avance</span>
+                  </div>
+                  <svg class="w-4 h-4 text-white group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">No hay proyectos registrados</h3>
+          <p class="text-gray-500 max-w-md mx-auto">Los proyectos aparecerán aquí una vez que sean creados y asignados.</p>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

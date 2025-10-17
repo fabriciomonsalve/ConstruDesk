@@ -1,11 +1,12 @@
 from asyncio import Task
 from datetime import datetime
 import os
-from flask import Blueprint, app, current_app, flash, redirect, render_template, send_from_directory, url_for
+from flask import Blueprint, abort, app, current_app, flash, redirect, render_template, send_from_directory, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from app import db
-from app.models import AdminUser, Project, ProjectDocument, ProjectTask, ProjectUserRole
+from app.forms import NuevoChecklistItemForm, ProgressForm
+from app.models import AdminUser, DailyChecklist, ProgressPhoto, Project, ProjectDocument, ProjectProgress, ProjectTask, ProjectUserRole
 from flask import request
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dwg', 'dxf', 'zip'}
@@ -240,3 +241,155 @@ def delete_task(project_id, task_id):
 
     flash('Tarea eliminada exitosamente.', 'success')
     return redirect(url_for('editor.view_tasks', project_id=project_id))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Listar los ítems del checklist de un proyecto
+@editor_bp.route('/proyecto/<int:project_id>/checklist')
+@login_required
+def checklist_items(project_id):
+    project = Project.query.get_or_404(project_id)
+
+    # Solo editores pueden acceder
+    if not current_user.has_role("editor"):
+        abort(403)
+
+    items = DailyChecklist.query.filter_by(project_id=project.id).all()
+    return render_template("editor/checklist_items.html", project=project, items=items)
+
+
+
+@editor_bp.route('/proyecto/<int:project_id>/checklist/nuevo', methods=['GET', 'POST'])
+@login_required
+def nuevo_checklist_item(project_id):
+    project = Project.query.get_or_404(project_id)
+
+    if not current_user.has_role("editor"):
+        abort(403)
+
+    form = NuevoChecklistItemForm()
+
+    if form.validate_on_submit():
+        item = DailyChecklist(
+            project_id=project.id,
+            item_text=form.item_text.data,
+            is_active=True
+        )
+        db.session.add(item)
+        db.session.commit()
+        flash("Nuevo ítem agregado ✅", "success")
+        return redirect(url_for("editor.checklist_items", project_id=project.id))
+
+    return render_template(
+        "editor/nuevo_checklist_item.html",
+        project=project,
+        form=form  # 👈 muy importante
+    )
+
+
+
+
+# Desactivar o activar ítem
+@editor_bp.route('/proyecto/<int:project_id>/checklist/<int:item_id>/toggle')
+@login_required
+def toggle_checklist_item(project_id, item_id):
+    project = Project.query.get_or_404(project_id)
+    item = DailyChecklist.query.get_or_404(item_id)
+
+    if not current_user.has_role("editor"):
+        abort(403)
+
+    item.is_active = not item.is_active
+    db.session.commit()
+    flash("Estado del ítem actualizado ✅", "info")
+    return redirect(url_for("editor.checklist_items", project_id=project.id))
+
+
+
+@editor_bp.route('/avances/proyectos')
+@login_required
+def listar_proyectos():
+    # Solo editores pueden acceder
+    if not current_user.has_role("editor"):
+        abort(403)
+
+    proyectos = Project.query.all()  # Todos los proyectos
+    return render_template("editor/avance_obra.html", proyectos=proyectos)
+
+
+
+
+
+
+
+
+@editor_bp.route('/avances/proyecto/<int:project_id>')
+@login_required
+def listar_avances(project_id):
+    if not current_user.has_role("editor"):
+        abort(403)
+
+    project = Project.query.get_or_404(project_id)
+    avances = ProjectProgress.query.filter_by(project_id=project.id).order_by(ProjectProgress.date.desc()).all()
+    return render_template("editor/avances.html", project=project, avances=avances)
+
+
+
+# Registrar avance en cualquier proyecto
+@editor_bp.route('/avances/proyecto/<int:project_id>/nuevo', methods=['GET', 'POST'])
+@login_required
+def nuevo_avance(project_id):
+    if not current_user.has_role("editor"):
+        abort(403)
+
+    project = Project.query.get_or_404(project_id)
+    form = ProgressForm()
+
+    if form.validate_on_submit():
+        # Crear avance
+        avance = ProjectProgress(
+            project_id=project.id,
+            user_id=current_user.id,
+            description=form.description.data,
+            date=datetime.utcnow()
+        )
+        db.session.add(avance)
+        db.session.commit()
+
+        # Guardar fotos
+        if form.photos.data:
+            upload_folder = os.path.join(current_app.root_path, "static/uploads")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            for photo in form.photos.data:
+                if photo:
+                    filename = secure_filename(photo.filename)
+                    file_path = os.path.join(upload_folder, filename)
+                    photo.save(file_path)
+
+                    foto = ProgressPhoto(
+                        progress_id=avance.id,
+                        file_path=f"uploads/{filename}"
+                    )
+                    db.session.add(foto)
+
+        db.session.commit()
+        flash("Avance registrado correctamente ✅", "success")
+        return redirect(url_for('editor.listar_avances', project_id=project.id))
+
+    return render_template("editor/nuevo_avance.html", form=form, project=project)
+
+

@@ -1,6 +1,6 @@
 import datetime
 from flask_wtf import FlaskForm
-from wtforms import DateTimeField, IntegerField, SelectField, StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import DateTimeField, IntegerField, MultipleFileField, SelectField, StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, Optional, Length
 from datetime import datetime  # Cambiar esta línea
 
@@ -42,3 +42,17 @@ class AssignUserForm(FlaskForm):
 
 
 
+# Formulario de avance
+class ProgressForm(FlaskForm):
+    description = TextAreaField("Descripción del avance", validators=[DataRequired()])
+    photos = MultipleFileField("Subir fotos (opcional)")
+    submit = SubmitField("Guardar avance")
+
+# Formulario checklist (dinámico)
+class ChecklistForm(FlaskForm):
+    submit = SubmitField("Guardar checklist")
+
+
+class NuevoChecklistItemForm(FlaskForm):
+    item_text = StringField('Texto del ítem', validators=[DataRequired(), Length(min=3, max=200)])
+    submit = SubmitField('Agregar ítem')

@@ -172,3 +172,75 @@ class ProjectTask(db.Model):
 
 
 
+
+
+
+
+
+class ProjectProgress(db.Model):
+    __tablename__ = 'project_progress'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), nullable=False)
+    description = db.Column(db.Text, nullable=False)  # Texto del avance
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    project = db.relationship('Project', backref=db.backref('progress_reports', lazy=True))
+    user = db.relationship('AdminUser', backref=db.backref('progress_reports', lazy=True))
+
+    def __repr__(self):
+        return f"<ProjectProgress project_id={self.project_id}, user_id={self.user_id}, date={self.date}>"
+
+
+
+class ProgressPhoto(db.Model):
+    __tablename__ = 'progress_photos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    progress_id = db.Column(db.Integer, db.ForeignKey('project_progress.id', ondelete='CASCADE'), nullable=False)
+    file_path = db.Column(db.String(255), nullable=False)  # ruta en servidor o S3
+    upload_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    progress = db.relationship('ProjectProgress', backref=db.backref('photos', lazy=True))
+
+    def __repr__(self):
+        return f"<ProgressPhoto progress_id={self.progress_id}, path={self.file_path}>"
+    
+
+class DailyChecklist(db.Model):
+    __tablename__ = 'daily_checklists'
+
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), nullable=False)
+    item_text = db.Column(db.String(255), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+
+    project = db.relationship('Project', backref=db.backref('checklist_items', lazy=True))
+
+    def __repr__(self):
+        return f"<DailyChecklist {self.item_text}>"
+    
+
+class ChecklistCompletion(db.Model):
+    __tablename__ = 'checklist_completion'
+
+    id = db.Column(db.Integer, primary_key=True)
+    checklist_id = db.Column(db.Integer, db.ForeignKey('daily_checklists.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), nullable=False)
+    date = db.Column(db.Date, default=datetime.utcnow().date)
+    completed = db.Column(db.Boolean, default=False)
+
+    checklist = db.relationship('DailyChecklist', backref=db.backref('completions', lazy=True))
+    user = db.relationship('AdminUser', backref=db.backref('checklist_completions', lazy=True))
+
+    def __repr__(self):
+        return f"<ChecklistCompletion user_id={self.user_id}, item={self.checklist.item_text}, completed={self.completed}>"
+
+
+
+
+
+
+
+
