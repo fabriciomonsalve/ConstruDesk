@@ -1,0 +1,11 @@
+{% for c in comments %}
+  <div class="border border-gray-200 rounded-lg p-4 mb-3">
+    <div class="flex justify-between">
+      <span class="font-semibold text-gray-800">{{ c.user.nombre }}</span>
+      <span class="text-sm text-gray-400">{{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+    </div>
+    <p class="text-gray-700 mt-2">{{ c.content }}</p>
+  </div>
+{% else %}
+  <p class="text-gray-500 italic">Aún no hay comentarios.</p>
+{% endfor %}

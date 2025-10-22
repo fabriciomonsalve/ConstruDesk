@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <a href="{{ url_for('editor.view_tasks', project_id=project.id) }}" class="text-blue-600 hover:underline mb-4 inline-block">
+        ← Volver a tareas
+      </a>
+
+      <h1 class="text-3xl font-bold mb-4 text-gray-900">{{ task.name }}</h1>
+      <p class="text-gray-600 mb-8">{{ task.description }}</p>
+
+      <div class="border-t border-gray-200 pt-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-900">💬 Comentarios</h2>
+
+        <!-- 🔹 Lista dinámica -->
+        <div id="comments-list">
+          {% include 'editor/_comments_partial.html' %}
+        </div>
+
+        {% if current_user.has_role('editor') or current_user.has_role('miembro') %}
+        <form method="POST" class="mt-6">
+          <textarea name="content" rows="3" class="w-full border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500" placeholder="Escribe un comentario..."></textarea>
+          <button type="submit" class="mt-3 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all">
+            Enviar comentario
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Script para actualizar los comentarios automáticamente -->
+<script>
+async function loadComments() {
+  const url = "{{ url_for('editor.task_comments', project_id=project.id, task_id=task.id) }}?ajax=1";
+  const res = await fetch(url);
+  const html = await res.text();
+  document.getElementById('comments-list').innerHTML = html;
+}
+
+setInterval(loadComments, 3000); // 🔄 actualiza cada 5 segundos
+</script>
+
+{% endblock %}
+

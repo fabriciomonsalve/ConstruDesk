@@ -167,16 +167,6 @@ class ProjectTask(db.Model):
         return f"<ProjectTask {self.name}, {self.status}>"
 
 
-
-
-
-
-
-
-
-
-
-
 class ProjectProgress(db.Model):
     __tablename__ = 'project_progress'
     
@@ -238,9 +228,86 @@ class ChecklistCompletion(db.Model):
         return f"<ChecklistCompletion user_id={self.user_id}, item={self.checklist.item_text}, completed={self.completed}>"
 
 
+class Comment(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relaciones
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), nullable=False)
+    task_id = db.Column(db.Integer, db.ForeignKey('project_tasks.id', ondelete='CASCADE'), nullable=True)
+
+    user = db.relationship('AdminUser', backref=db.backref('comments', lazy=True))
+    project = db.relationship('Project', backref=db.backref('comments', lazy=True))
+    task = db.relationship('ProjectTask', backref=db.backref('comments', lazy=True))
+
+    def __repr__(self):
+        return f"<Comment user={self.user_id} task={self.task_id}>"
 
 
 
 
+
+
+class IncidentReport(db.Model):
+    __tablename__ = 'incident_reports'
+
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # 1️⃣ Información del reporte
+    report_datetime = db.Column(db.DateTime, default=datetime.utcnow)
+    reporter_id = db.Column(db.Integer, db.ForeignKey('admin_users.id', ondelete='CASCADE'), nullable=False)
+    reporter_name = db.Column(db.String(120), nullable=False)
+    reporter_role = db.Column(db.String(80), nullable=True)
+    reporter_email = db.Column(db.String(120), nullable=False)
+    reporter_phone = db.Column(db.String(20), nullable=True)
+
+    # 2️⃣ Proyecto y ubicación
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), nullable=False)
+    location = db.Column(db.String(120), nullable=False)
+
+    # 3️⃣ Detalles del incidente
+    incident_datetime = db.Column(db.DateTime, nullable=False)
+    incident_type = db.Column(db.String(50), nullable=False)  # lesión, cuasi accidente, daño, seguridad
+    description = db.Column(db.Text, nullable=False)
+    environment_conditions = db.Column(db.Text, nullable=True)  # clima, iluminación, ruido
+
+    # 4️⃣ Personas involucradas
+    affected_persons = db.Column(db.Text, nullable=True)  # JSON o texto
+    injuries = db.Column(db.Text, nullable=True)
+    witnesses = db.Column(db.Text, nullable=True)
+
+    # 5️⃣ Equipos y daños
+    equipment_involved = db.Column(db.String(255), nullable=True)
+    property_damage = db.Column(db.Text, nullable=True)
+
+    # 6️⃣ Acciones y análisis
+    corrective_actions = db.Column(db.Text, nullable=False)
+    emergency_services_contacted = db.Column(db.Boolean, default=False)
+    emergency_details = db.Column(db.String(255), nullable=True)
+    root_cause = db.Column(db.String(255), nullable=True)
+    preventive_actions = db.Column(db.Text, nullable=True)
+
+    # 7️⃣ Evidencia
+    photo_path = db.Column(db.String(255), nullable=True)
+    attachment_path = db.Column(db.String(255), nullable=True)
+    evidence_comment = db.Column(db.String(255), nullable=True)
+
+    # 8️⃣ Seguimiento (administrador)
+    severity = db.Column(db.String(20), default='baja')  # baja, media, alta, crítica
+    status = db.Column(db.String(50), default='abierto')  # abierto, en investigación, cerrado
+    responsible_user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=True)
+    closure_date = db.Column(db.DateTime, nullable=True)
+
+    # Relaciones
+    project = db.relationship('Project', backref=db.backref('incident_reports', lazy=True))
+    reporter = db.relationship('AdminUser', foreign_keys=[reporter_id])
+    responsible_user = db.relationship('AdminUser', foreign_keys=[responsible_user_id])
+
+    def __repr__(self):
+        return f"<IncidentReport id={self.id}, project={self.project_id}, status={self.status}>"
 
 

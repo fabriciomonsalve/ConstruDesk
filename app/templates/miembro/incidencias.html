@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="p-3 bg-blue-600 rounded-xl">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">Incidencias de Mis Proyectos</h1>
+        </div>
+        <p class="text-gray-600 ml-16">Gestiona las incidencias de todos tus proyectos asignados</p>
+      </div>
+
+      {% if proyectos %}
+        <!-- Projects Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for proyecto in proyectos %}
+            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 group">
+              
+              <!-- Header Card -->
+              <div class="p-6 border-b border-gray-100">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{{ proyecto.name }}</h3>
+                  </div>
+                  <div class="p-2 bg-blue-50 rounded-lg">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                <!-- Status Badge -->
+                <div class="mb-3">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                    {% if proyecto.status == 'activo' %}bg-green-100 text-green-800
+                    {% elif proyecto.status == 'en_progreso' %}bg-yellow-100 text-yellow-800
+                    {% elif proyecto.status == 'pausado' %}bg-orange-100 text-orange-800
+                    {% elif proyecto.status == 'completado' %}bg-blue-100 text-blue-800
+                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                    <span class="w-2 h-2 rounded-full mr-2
+                      {% if proyecto.status == 'activo' %}bg-green-500
+                      {% elif proyecto.status == 'en_progreso' %}bg-yellow-500
+                      {% elif proyecto.status == 'pausado' %}bg-orange-500
+                      {% elif proyecto.status == 'completado' %}bg-blue-500
+                      {% else %}bg-gray-500{% endif %}">
+                    </span>
+                    {{ proyecto.status|replace('_', ' ')|capitalize }}
+                  </span>
+                </div>
+
+                <!-- Description -->
+                <p class="text-sm text-gray-600 line-clamp-2">
+                  {{ proyecto.description or "Sin descripción disponible" }}
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="p-6 bg-gray-50 space-y-3">
+                <!-- Ver Incidencias -->
+                <a href="{{ url_for('miembro.ver_incidencias_proyecto', project_id=proyecto.id) }}" 
+                   class="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-700 transition-all duration-200 group/btn">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-50 group-hover/btn:bg-blue-100 rounded-lg transition-colors">
+                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                      </svg>
+                    </div>
+                    <span>Ver Incidencias</span>
+                  </div>
+                  <svg class="w-4 h-4 text-gray-400 group-hover/btn:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+
+                <!-- Nueva Incidencia -->
+                <a href="{{ url_for('miembro.nueva_incidencia', project_id=proyecto.id) }}" 
+                   class="flex items-center justify-between w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white transition-all duration-200 shadow-md hover:shadow-lg group/btn">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-white bg-opacity-20 rounded-lg">
+                      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
+                    </div>
+                    <span>Registrar Incidencia</span>
+                  </div>
+                  <svg class="w-4 h-4 text-white group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">No tienes proyectos asignados</h3>
+          <p class="text-gray-500 max-w-md mx-auto">Actualmente no estás asignado a ningún proyecto. Contacta con tu supervisor para obtener acceso a proyectos.</p>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

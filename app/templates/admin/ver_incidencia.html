@@ -1,0 +1,278 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-blue-600 rounded-xl">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Incidencia #{{ incidencia.id }}</h1>
+                <p class="text-gray-600 text-sm sm:text-base mt-1">{{ proyecto.name }}</p>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <a href="{{ url_for('admin.listar_incidencias') }}" 
+                 class="inline-flex items-center justify-center px-5 py-3 bg-white border-2 border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg font-semibold transition-all duration-200 whitespace-nowrap">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+              </a>
+              <a href="{{ url_for('admin.descargar_incidencia_pdf', incident_id=incidencia.id) }}" 
+                 class="inline-flex items-center justify-center px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg whitespace-nowrap">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Descargar PDF
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- 1. Información del reporte -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">1</span>
+              Información del Reporte
+            </h3>
+          </div>
+          <div class="p-5 space-y-4">
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Reportado por</p>
+              <p class="text-gray-900 font-medium">{{ incidencia.reporter_name }}</p>
+              <p class="text-sm text-gray-600">{{ incidencia.reporter_role }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Correo</p>
+              <p class="text-gray-900">{{ incidencia.reporter_email }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Teléfono</p>
+              <p class="text-gray-900">{{ incidencia.reporter_phone or 'No especificado' }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fecha de reporte</p>
+              <p class="text-gray-900">{{ incidencia.report_datetime.strftime("%d/%m/%Y %H:%M") }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Proyecto y ubicación -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-cyan-600 to-cyan-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">2</span>
+              Proyecto y Ubicación
+            </h3>
+          </div>
+          <div class="p-5 space-y-4">
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Proyecto</p>
+              <p class="text-gray-900 font-medium">{{ proyecto.name }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Ubicación</p>
+              <p class="text-gray-900">{{ incidencia.location }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Detalles del incidente -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden lg:col-span-2">
+          <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">3</span>
+              Detalles del Incidente
+            </h3>
+          </div>
+          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fecha y hora del incidente</p>
+              <p class="text-gray-900">{{ incidencia.incident_datetime.strftime("%d/%m/%Y %H:%M") }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Tipo de incidente</p>
+              <p class="text-gray-900">{{ incidencia.incident_type }}</p>
+            </div>
+            <div class="md:col-span-2">
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Descripción</p>
+              <p class="text-gray-900 leading-relaxed">{{ incidencia.description }}</p>
+            </div>
+            <div class="md:col-span-2">
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Condiciones ambientales</p>
+              <p class="text-gray-900">{{ incidencia.environment_conditions or 'No especificado' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Personas involucradas -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-orange-600 to-orange-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">4</span>
+              Personas Involucradas
+            </h3>
+          </div>
+          <div class="p-5 space-y-4">
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Afectados</p>
+              <p class="text-gray-900">{{ incidencia.affected_persons or 'Ninguno' }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Lesiones</p>
+              <p class="text-gray-900">{{ incidencia.injuries or 'Ninguna' }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Testigos</p>
+              <p class="text-gray-900">{{ incidencia.witnesses or 'No registrados' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Equipos y daños -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-red-600 to-red-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">5</span>
+              Equipos y Daños
+            </h3>
+          </div>
+          <div class="p-5 space-y-4">
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Equipo involucrado</p>
+              <p class="text-gray-900">{{ incidencia.equipment_involved or 'Ninguno' }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Daños a la propiedad</p>
+              <p class="text-gray-900">{{ incidencia.property_damage or 'Ninguno' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Acciones y análisis -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden lg:col-span-2">
+          <div class="bg-gradient-to-r from-green-600 to-green-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">6</span>
+              Acciones y Análisis
+            </h3>
+          </div>
+          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Acciones correctivas inmediatas</p>
+              <p class="text-gray-900 leading-relaxed">{{ incidencia.corrective_actions }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Servicios de emergencia</p>
+              <p class="text-gray-900">
+                {{ "Sí" if incidencia.emergency_services_contacted else "No" }}
+                {% if incidencia.emergency_details %}<br><span class="text-sm text-gray-600">({{ incidencia.emergency_details }})</span>{% endif %}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Causa raíz</p>
+              <p class="text-gray-900">{{ incidencia.root_cause or 'No determinada' }}</p>
+            </div>
+            <div class="md:col-span-2">
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Acciones preventivas</p>
+              <p class="text-gray-900 leading-relaxed">{{ incidencia.preventive_actions or 'No registradas' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Evidencia -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden lg:col-span-2">
+          <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">7</span>
+              Evidencia
+            </h3>
+          </div>
+          <div class="p-5 space-y-4">
+            {% if incidencia.photo_path %}
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Fotografía</p>
+              <img src="{{ url_for('static', filename=incidencia.photo_path) }}" 
+                   class="w-full max-w-2xl rounded-lg border-2 border-gray-200 shadow-sm" 
+                   alt="Evidencia fotográfica">
+            </div>
+            {% endif %}
+            {% if incidencia.attachment_path %}
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Documento adjunto</p>
+              <a href="{{ url_for('static', filename=incidencia.attachment_path) }}" 
+                 target="_blank"
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg transition-all duration-200 font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                </svg>
+                Descargar documento
+              </a>
+            </div>
+            {% endif %}
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Comentario</p>
+              <p class="text-gray-900">{{ incidencia.evidence_comment or 'Sin comentarios' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Seguimiento -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden lg:col-span-2">
+          <div class="bg-gradient-to-r from-slate-600 to-slate-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">8</span>
+              Seguimiento
+            </h3>
+          </div>
+          <div class="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Gravedad</p>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
+                {% if incidencia.severity == 'baja' %}bg-gray-100 text-gray-800
+                {% elif incidencia.severity == 'media' %}bg-orange-100 text-orange-800
+                {% elif incidencia.severity == 'alta' %}bg-red-100 text-red-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                {{ incidencia.severity|capitalize }}
+              </span>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Estado</p>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
+                {% if incidencia.status == 'cerrado' %}bg-green-100 text-green-800
+                {% elif incidencia.status == 'investigacion' %}bg-yellow-100 text-yellow-800
+                {% else %}bg-red-100 text-red-800{% endif %}">
+                {{ incidencia.status|capitalize }}
+              </span>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Responsable asignado</p>
+              <p class="text-gray-900">{{ incidencia.responsible_user.nombre if incidencia.responsible_user else 'No asignado' }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fecha de cierre</p>
+              <p class="text-gray-900">{{ incidencia.closure_date.strftime("%d/%m/%Y %H:%M") if incidencia.closure_date else 'No cerrada' }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

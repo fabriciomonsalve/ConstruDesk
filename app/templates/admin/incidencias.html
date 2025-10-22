@@ -1,0 +1,320 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-blue-600 rounded-xl">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Panel de Incidencias</h1>
+            <p class="text-gray-600 mt-1">Gestiona y supervisa todas las incidencias</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <form method="GET" class="mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Estado</label>
+            <select name="estado" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+              <option value="">Todos los estados</option>
+              <option value="abierto" {% if estado == 'abierto' %}selected{% endif %}>Abierto</option>
+              <option value="en investigación" {% if estado == 'en investigación' %}selected{% endif %}>En investigación</option>
+              <option value="cerrado" {% if estado == 'cerrado' %}selected{% endif %}>Cerrado</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Gravedad</label>
+            <select name="gravedad" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+              <option value="">Todas las gravedades</option>
+              <option value="baja" {% if gravedad == 'baja' %}selected{% endif %}>Baja</option>
+              <option value="media" {% if gravedad == 'media' %}selected{% endif %}>Media</option>
+              <option value="alta" {% if gravedad == 'alta' %}selected{% endif %}>Alta</option>
+              <option value="critica" {% if gravedad == 'critica' %}selected{% endif %}>Crítica</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2 lg:col-span-2 flex items-end">
+            <button type="submit" class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
+              <span class="inline-flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                </svg>
+                Aplicar Filtros
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {% if incidencias %}
+      
+      <!-- Desktop Table View - Rediseñada con más espacio -->
+      <div class="hidden xl:block space-y-4">
+        {% for i in incidencias %}
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+          
+          <!-- Fila principal con información -->
+          <div class="px-6 py-5 bg-gradient-to-r from-gray-50 to-white">
+            <div class="flex items-center justify-between">
+              
+              <!-- Columna izquierda: Info principal -->
+              <div class="flex items-center gap-6 flex-1">
+                <div class="flex flex-col">
+                  <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">ID</span>
+                  <span class="text-lg font-bold text-gray-900">#{{ i.id }}</span>
+                </div>
+                
+                <div class="h-12 w-px bg-gray-300"></div>
+                
+                <div class="flex flex-col flex-1 min-w-0">
+                  <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Proyecto</span>
+                  <span class="text-base font-semibold text-gray-900 truncate">{{ i.project.name }}</span>
+                  <span class="text-sm text-gray-600">{{ i.incident_type|capitalize }}</span>
+                </div>
+                
+                <div class="h-12 w-px bg-gray-300"></div>
+              </div>
+
+              <!-- Columna derecha: Badges y estado -->
+              <div class="flex items-center gap-4">
+                <div class="text-center">
+                  <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Gravedad</div>
+                  <span class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold shadow-sm whitespace-nowrap
+                    {% if i.severity == 'baja' %}bg-gray-100 text-gray-800
+                    {% elif i.severity == 'media' %}bg-orange-100 text-orange-800
+                    {% elif i.severity == 'alta' %}bg-red-100 text-red-800
+                    {% elif i.severity == 'critica' %}bg-purple-100 text-purple-800
+                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {{ i.severity|capitalize }}
+                  </span>
+                </div>
+
+                <div class="h-14 w-px bg-gray-300"></div>
+                
+                <div class="text-center">
+                  <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Estado</div>
+                  <span class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold shadow-sm whitespace-nowrap
+                    {% if i.status == 'cerrado' %}bg-green-100 text-green-800
+                    {% elif i.status == 'en investigación' %}bg-yellow-100 text-yellow-800
+                    {% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ i.status|capitalize }}
+                  </span>
+                </div>
+
+                <div class="h-14 w-px bg-gray-300"></div>
+                
+                <div class="text-center">
+                  <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Responsable</div>
+                  <div class="text-sm font-medium text-gray-900 px-2">
+                    {{ i.responsible_user.nombre if i.responsible_user else 'No asignado' }}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Panel de acciones expandible -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <form action="{{ url_for('admin.actualizar_incidencia', incident_id=i.id) }}" method="POST">
+              <div class="flex items-center gap-4">
+                
+                <div class="flex-1 grid grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">Cambiar Estado</label>
+                    <select name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                      <option value="abierto" {% if i.status == 'abierto' %}selected{% endif %}>Abierto</option>
+                      <option value="en investigación" {% if i.status == 'en investigación' %}selected{% endif %}>En investigación</option>
+                      <option value="cerrado" {% if i.status == 'cerrado' %}selected{% endif %}>Cerrado</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">Cambiar Gravedad</label>
+                    <select name="severity" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                      <option value="baja" {% if i.severity == 'baja' %}selected{% endif %}>Baja</option>
+                      <option value="media" {% if i.severity == 'media' %}selected{% endif %}>Media</option>
+                      <option value="alta" {% if i.severity == 'alta' %}selected{% endif %}>Alta</option>
+                      <option value="critica" {% if i.severity == 'critica' %}selected{% endif %}>Crítica</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">Asignar Responsable</label>
+                    <select name="responsible_user_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                      <option value="">Sin asignar</option>
+                      {% for u in usuarios %}
+                        <option value="{{ u.id }}" {% if i.responsible_user_id == u.id %}selected{% endif %}>{{ u.nombre }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <div class="flex gap-3 pt-6">
+                  <button type="submit" class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Guardar
+                  </button>
+
+                  <a href="{{ url_for('admin.ver_incidencia', incident_id=i.id) }}"
+                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Ver Detalle
+                  </a>
+                </div>
+
+              </div>
+            </form>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Mobile/Tablet Card View - Mejorada -->
+      <div class="xl:hidden space-y-6">
+        {% for i in incidencias %}
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+          
+          <!-- Card Header -->
+          <div class="bg-gradient-to-r from-gray-50 to-white px-5 py-4 border-b border-gray-200">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">ID #{{ i.id }}</span>
+                <h3 class="text-lg font-bold text-gray-900 mt-1">{{ i.incident_type|capitalize }}</h3>
+              </div>
+              <div class="flex flex-col gap-3">
+                <div>
+                  <span class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Gravedad</span>
+                  <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm
+                    {% if i.severity == 'baja' %}bg-gray-100 text-gray-800
+                    {% elif i.severity == 'media' %}bg-orange-100 text-orange-800
+                    {% elif i.severity == 'alta' %}bg-red-100 text-red-800
+                    {% elif i.severity == 'critica' %}bg-purple-100 text-purple-800
+                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {{ i.severity|capitalize }}
+                  </span>
+                </div>
+                <div>
+                  <span class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Estado</span>
+                  <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm
+                    {% if i.status == 'cerrado' %}bg-green-100 text-green-800
+                    {% elif i.status == 'en investigación' %}bg-yellow-100 text-yellow-800
+                    {% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ i.status|capitalize }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="p-5">
+            <div class="grid grid-cols-2 gap-4 mb-5">
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Proyecto</p>
+                <p class="text-sm font-medium text-gray-900">{{ i.project.name }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Fecha</p>
+                <p class="text-sm font-medium text-gray-900">{{ i.report_datetime.strftime('%d/%m/%Y') }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Reportado por</p>
+                <p class="text-sm font-medium text-gray-900">{{ i.reporter_name }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Responsable</p>
+                <p class="text-sm font-medium text-gray-900">{{ i.responsible_user.nombre if i.responsible_user else 'No asignado' }}</p>
+              </div>
+            </div>
+
+            <!-- Update Form -->
+            <form action="{{ url_for('admin.actualizar_incidencia', incident_id=i.id) }}" method="POST" class="pt-5 border-t border-gray-200 space-y-4">
+              <div class="grid grid-cols-1 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-600 mb-2">Estado</label>
+                  <select name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                    <option value="abierto" {% if i.status == 'abierto' %}selected{% endif %}>Abierto</option>
+                    <option value="en investigación" {% if i.status == 'en investigación' %}selected{% endif %}>En investigación</option>
+                    <option value="cerrado" {% if i.status == 'cerrado' %}selected{% endif %}>Cerrado</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-600 mb-2">Gravedad</label>
+                  <select name="severity" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                    <option value="baja" {% if i.severity == 'baja' %}selected{% endif %}>Baja</option>
+                    <option value="media" {% if i.severity == 'media' %}selected{% endif %}>Media</option>
+                    <option value="alta" {% if i.severity == 'alta' %}selected{% endif %}>Alta</option>
+                    <option value="critica" {% if i.severity == 'critica' %}selected{% endif %}>Crítica</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-600 mb-2">Responsable</label>
+                  <select name="responsible_user_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                    <option value="">Sin asignar</option>
+                    {% for u in usuarios %}
+                      <option value="{{ u.id }}" {% if i.responsible_user_id == u.id %}selected{% endif %}>{{ u.nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 pt-2">
+                <button type="submit" class="px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
+                  <span class="inline-flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Guardar
+                  </span>
+                </button>
+                <a href="{{ url_for('admin.ver_incidencia', incident_id=i.id) }}"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  Ver Detalle
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      
+      <!-- Empty State -->
+      <div class="text-center py-16">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-3">No hay incidencias</h3>
+        <p class="text-gray-500 max-w-md mx-auto">
+          No se encontraron incidencias con los filtros aplicados. Intenta ajustar tus criterios de búsqueda.
+        </p>
+      </div>
+      
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

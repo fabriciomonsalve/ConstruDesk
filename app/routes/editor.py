@@ -6,8 +6,9 @@ from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from app import db
 from app.forms import NuevoChecklistItemForm, ProgressForm
-from app.models import AdminUser, DailyChecklist, ProgressPhoto, Project, ProjectDocument, ProjectProgress, ProjectTask, ProjectUserRole
+from app.models import AdminUser, Comment, DailyChecklist, ProgressPhoto, Project, ProjectDocument, ProjectProgress, ProjectTask, ProjectUserRole
 from flask import request
+import pytz
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dwg', 'dxf', 'zip'}
 
@@ -243,35 +244,19 @@ def delete_task(project_id, task_id):
     return redirect(url_for('editor.view_tasks', project_id=project_id))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Listar los ítems del checklist de un proyecto
 @editor_bp.route('/proyecto/<int:project_id>/checklist')
 @login_required
 def checklist_items(project_id):
     project = Project.query.get_or_404(project_id)
 
-    # Solo editores pueden acceder
     if not current_user.has_role("editor"):
         abort(403)
 
     items = DailyChecklist.query.filter_by(project_id=project.id).all()
     return render_template("editor/checklist_items.html", project=project, items=items)
 
-
-
+# Agregar nuevo ítem al checklist
 @editor_bp.route('/proyecto/<int:project_id>/checklist/nuevo', methods=['GET', 'POST'])
 @login_required
 def nuevo_checklist_item(project_id):
@@ -290,17 +275,14 @@ def nuevo_checklist_item(project_id):
         )
         db.session.add(item)
         db.session.commit()
-        flash("Nuevo ítem agregado ✅", "success")
+        flash("Nuevo ítem agregado", "success")
         return redirect(url_for("editor.checklist_items", project_id=project.id))
 
     return render_template(
         "editor/nuevo_checklist_item.html",
         project=project,
-        form=form  # 👈 muy importante
+        form=form
     )
-
-
-
 
 # Desactivar o activar ítem
 @editor_bp.route('/proyecto/<int:project_id>/checklist/<int:item_id>/toggle')
@@ -314,28 +296,22 @@ def toggle_checklist_item(project_id, item_id):
 
     item.is_active = not item.is_active
     db.session.commit()
-    flash("Estado del ítem actualizado ✅", "info")
+    flash("Estado del ítem actualizado ", "info")
     return redirect(url_for("editor.checklist_items", project_id=project.id))
 
 
-
+# Listar avances de todos los proyectos
 @editor_bp.route('/avances/proyectos')
 @login_required
 def listar_proyectos():
-    # Solo editores pueden acceder
     if not current_user.has_role("editor"):
         abort(403)
 
-    proyectos = Project.query.all()  # Todos los proyectos
+    proyectos = Project.query.all() 
     return render_template("editor/avance_obra.html", proyectos=proyectos)
 
 
-
-
-
-
-
-
+# Listar avances de un proyecto específico
 @editor_bp.route('/avances/proyecto/<int:project_id>')
 @login_required
 def listar_avances(project_id):
@@ -345,7 +321,6 @@ def listar_avances(project_id):
     project = Project.query.get_or_404(project_id)
     avances = ProjectProgress.query.filter_by(project_id=project.id).order_by(ProjectProgress.date.desc()).all()
     return render_template("editor/avances.html", project=project, avances=avances)
-
 
 
 # Registrar avance en cualquier proyecto
@@ -359,12 +334,16 @@ def nuevo_avance(project_id):
     form = ProgressForm()
 
     if form.validate_on_submit():
+        # ⏰ Obtener hora de Chile
+        chile_tz = pytz.timezone("America/Santiago")
+        ahora_chile = datetime.now(chile_tz)
+
         # Crear avance
         avance = ProjectProgress(
             project_id=project.id,
             user_id=current_user.id,
             description=form.description.data,
-            date=datetime.utcnow()
+            date=ahora_chile   # 👈 aquí se guarda la hora local
         )
         db.session.add(avance)
         db.session.commit()
@@ -391,5 +370,41 @@ def nuevo_avance(project_id):
         return redirect(url_for('editor.listar_avances', project_id=project.id))
 
     return render_template("editor/nuevo_avance.html", form=form, project=project)
+
+# Ruta para ver y agregar comentarios a una tarea
+@editor_bp.route('/project/<int:project_id>/task/<int:task_id>/comments', methods=['GET', 'POST'])
+@login_required
+def task_comments(project_id, task_id):
+    from sqlalchemy import select
+
+    project = Project.query.get_or_404(project_id)
+    task = ProjectTask.query.get_or_404(task_id)
+
+    if request.method == 'POST':
+        content = request.form.get('content')
+        if not content or not content.strip():
+            flash("El comentario no puede estar vacío.", "warning")
+            return redirect(url_for('editor.task_comments', project_id=project.id, task_id=task.id))
+
+        comment = Comment(
+            content=content.strip(),
+            user_id=current_user.id,
+            project_id=project.id,
+            task_id=task.id
+        )
+        db.session.add(comment)
+        db.session.commit()
+
+        flash("Comentario agregado correctamente.", "success")
+        return redirect(url_for('editor.task_comments', project_id=project.id, task_id=task.id))
+
+    stmt = select(Comment).where(Comment.task_id == task.id).order_by(Comment.created_at.asc())
+    comments = db.session.execute(stmt).scalars().all()
+
+    if request.args.get("ajax"):
+        return render_template('editor/_comments_partial.html', comments=comments)
+
+    return render_template('editor/task_comments.html', project=project, task=task, comments=comments)
+
 
 

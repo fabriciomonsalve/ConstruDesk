@@ -1,11 +1,23 @@
+from datetime import datetime
 from tokenize import generate_tokens
+from zoneinfo import ZoneInfo
 from flask import Blueprint, redirect, render_template, url_for, flash
 from flask_login import current_user, login_required
+import pytz
 from app.forms import AssignUserForm, CreateUserForm, ProjectForm
-from app.models import AdminUser, ContactMessage, Project, ProjectInvitation, ProjectUserRole, Role
+from app.models import AdminUser, ContactMessage, IncidentReport, Project, ProjectInvitation, ProjectUserRole, Role
 from app import db
 from werkzeug.security import generate_password_hash
 from flask import request
+
+# PDF generation imports
+from io import BytesIO
+from flask import send_file
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -215,7 +227,7 @@ def assign_user_to_project():
 
     return render_template('admin/usuarios_a_proyectos.html', users=users, projects=projects, roles=roles)
 
-
+# Ruta para ver los detalles de un proyecto, incluyendo usuarios asignados y sus roles
 @admin_bp.route('/project_details/<int:project_id>', methods=['GET'])
 @login_required
 def project_details(project_id):
@@ -233,6 +245,141 @@ def project_details(project_id):
 
 
 
+
+# Listar todas las incidencias
+@admin_bp.route('/incidencias', methods=['GET'])
+@login_required
+def listar_incidencias():
+    estado = request.args.get('estado')
+    gravedad = request.args.get('gravedad')
+
+    query = IncidentReport.query.join(Project).order_by(IncidentReport.report_datetime.desc())
+
+    if estado:
+        query = query.filter(IncidentReport.status == estado)
+    if gravedad:
+        query = query.filter(IncidentReport.severity == gravedad)
+
+    incidencias = query.all()
+    usuarios = AdminUser.query.all()  
+
+    return render_template('admin/incidencias.html', incidencias=incidencias, usuarios=usuarios, estado=estado, gravedad=gravedad)
+
+
+# Actualizar una incidencia (estado, gravedad, responsable)
+@admin_bp.route('/incidencias/actualizar/<int:incident_id>', methods=['POST'])
+@login_required
+def actualizar_incidencia(incident_id):
+    incidencia = IncidentReport.query.get_or_404(incident_id)
+
+    incidencia.status = request.form.get('status')
+    incidencia.severity = request.form.get('severity')
+    incidencia.responsible_user_id = request.form.get('responsible_user_id') or None
+
+    # Si la incidencia se marca como cerrada SE registra UNA fecha de cierre
+    if incidencia.status == 'cerrado':
+
+        chile_tz = pytz.timezone("America/Santiago")
+        ahora_chile = datetime.now(chile_tz)
+
+        incidencia.closure_date = ahora_chile
+    else:
+        incidencia.closure_date = None
+
+    db.session.commit()
+    flash('Incidencia actualizada correctamente.', 'success')
+    return redirect(url_for('admin.listar_incidencias'))
+
+# Ver detalles de una incidencia
+@admin_bp.route('/incidencias/ver/<int:incident_id>')
+@login_required
+def ver_incidencia(incident_id):
+    incidencia = IncidentReport.query.get_or_404(incident_id)
+    proyecto = Project.query.get(incidencia.project_id)
+    return render_template('admin/ver_incidencia.html', incidencia=incidencia, proyecto=proyecto)
+
+
+# Descargar reporte de incidencia en PDF
+@admin_bp.route('/incidencias/pdf/<int:incident_id>')
+@login_required
+def descargar_incidencia_pdf(incident_id):
+    incidencia = IncidentReport.query.get_or_404(incident_id)
+    proyecto = Project.query.get(incidencia.project_id)
+
+    # Crear PDF en memoria
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=2*cm, leftMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Header
+    story.append(Paragraph(f"<b>Reporte de Incidencia #{incidencia.id}</b>", styles['Title']))
+    story.append(Spacer(1, 12))
+    story.append(Paragraph(f"<b>Proyecto:</b> {proyecto.name}", styles['Normal']))
+    story.append(Paragraph(f"<b>Fecha de reporte:</b> {incidencia.report_datetime.strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+    story.append(Spacer(1, 12))
+
+    # Información básica
+    data_info = [
+        ["Reportado por", incidencia.reporter_name],
+        ["Cargo", incidencia.reporter_role or "No especificado"],
+        ["Correo", incidencia.reporter_email],
+        ["Teléfono", incidencia.reporter_phone or "No especificado"],
+        ["Ubicación", incidencia.location],
+        ["Tipo de incidente", incidencia.incident_type],
+        ["Fecha y hora del incidente", incidencia.incident_datetime.strftime("%d/%m/%Y %H:%M")],
+    ]
+    table = Table(data_info, colWidths=[6*cm, 10*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+    ]))
+    story.append(table)
+    story.append(Spacer(1, 12))
+
+    # Descripción
+    story.append(Paragraph("<b>Descripción del incidente:</b>", styles['Heading3']))
+    story.append(Paragraph(incidencia.description, styles['Normal']))
+    story.append(Spacer(1, 12))
+
+    # Acciones
+    story.append(Paragraph("<b>Acciones correctivas inmediatas:</b>", styles['Heading3']))
+    story.append(Paragraph(incidencia.corrective_actions or "No registradas", styles['Normal']))
+    story.append(Spacer(1, 8))
+
+    story.append(Paragraph("<b>Causa raíz:</b>", styles['Heading3']))
+    story.append(Paragraph(incidencia.root_cause or "No determinada", styles['Normal']))
+    story.append(Spacer(1, 8))
+
+    story.append(Paragraph("<b>Acciones preventivas:</b>", styles['Heading3']))
+    story.append(Paragraph(incidencia.preventive_actions or "No registradas", styles['Normal']))
+    story.append(Spacer(1, 12))
+
+    # Seguimiento
+    story.append(Paragraph("<b>Seguimiento</b>", styles['Heading2']))
+    responsable = incidencia.responsible_user.nombre if incidencia.responsible_user else "No asignado"
+    cierre = incidencia.closure_date.strftime("%d/%m/%Y %H:%M") if incidencia.closure_date else "No cerrada"
+    data_seguimiento = [
+        ["Gravedad", incidencia.severity.capitalize()],
+        ["Estado", incidencia.status.capitalize()],
+        ["Responsable asignado", responsable],
+        ["Fecha de cierre", cierre],
+    ]
+    table2 = Table(data_seguimiento, colWidths=[6*cm, 10*cm])
+    table2.setStyle(TableStyle([
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+    ]))
+    story.append(table2)
+
+    # Generar PDF
+    doc.build(story)
+    buffer.seek(0)
+
+    filename = f"incidencia_{incidencia.id}.pdf"
+    return send_file(buffer, as_attachment=True, download_name=filename, mimetype='application/pdf')
 
 
 

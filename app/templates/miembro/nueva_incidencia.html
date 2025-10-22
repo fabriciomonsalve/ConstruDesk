@@ -1,0 +1,246 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-blue-600 rounded-xl">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Nueva Incidencia</h1>
+              <p class="text-gray-600 text-sm sm:text-base mt-1">{{ proyecto.name }}</p>
+            </div>
+          </div>
+          <a href="{{ url_for('miembro.ver_incidencias_proyecto', project_id=proyecto.id) }}" 
+             class="inline-flex items-center justify-center px-5 py-3 bg-white border-2 border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg font-semibold transition-all duration-200 whitespace-nowrap">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Volver
+          </a>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {{ form.hidden_tag() }}
+        {{ form.project_id(type="hidden", value=proyecto.id) }}
+
+        <!-- 1. Información del reporte -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">1</span>
+              Información del Reporte
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre</label>
+                <input type="text" class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 cursor-not-allowed" value="{{ current_user.nombre }}" readonly>
+                <input type="hidden" name="reporter_name" value="{{ current_user.nombre }}">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input type="email" class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 cursor-not-allowed" value="{{ current_user.email }}" readonly>
+                <input type="hidden" name="reporter_email" value="{{ current_user.email }}">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.reporter_role.label.text }}</label>
+                {{ form.reporter_role(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Cargo o función") }}
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.reporter_phone.label.text }}</label>
+                {{ form.reporter_phone(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", type="tel", placeholder="+56 9 1234 5678") }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Proyecto y ubicación -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-cyan-600 to-cyan-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">2</span>
+              Proyecto y Ubicación
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Proyecto</label>
+                <input type="text" class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 cursor-not-allowed" value="{{ proyecto.name }}" disabled>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.location.label.text }} <span class="text-red-500">*</span></label>
+                {{ form.location(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Ej: Ala norte, zona de excavación...", required=true) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Detalles del incidente -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">3</span>
+              Detalles del Incidente
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.incident_datetime.label.text }} <span class="text-red-500">*</span></label>
+                {{ form.incident_datetime(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", type="datetime-local", required=true) }}
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.incident_type.label.text }} <span class="text-red-500">*</span></label>
+                {{ form.incident_type(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", required=true) }}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.description.label.text }} <span class="text-red-500">*</span></label>
+              {{ form.description(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", rows="4", placeholder="Describa lo ocurrido...", required=true) }}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.environment_conditions.label.text }}</label>
+              {{ form.environment_conditions(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Ej: lluvia, poca iluminación...") }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Personas involucradas -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-orange-600 to-orange-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">4</span>
+              Personas Involucradas
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.affected_persons.label.text }}</label>
+              {{ form.affected_persons(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Nombre, cargo, empresa") }}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.injuries.label.text }}</label>
+              {{ form.injuries(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Parte del cuerpo afectada, gravedad...") }}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.witnesses.label.text }}</label>
+              {{ form.witnesses(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Nombres y contactos de testigos") }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Equipos y daños -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-red-600 to-red-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">5</span>
+              Equipos y Daños
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.equipment_involved.label.text }}</label>
+              {{ form.equipment_involved(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Ej: Andamio, martillo neumático...") }}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.property_damage.label.text }}</label>
+              {{ form.property_damage(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Descripción de daños a equipos o materiales") }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Acciones y análisis -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-green-600 to-green-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">6</span>
+              Acciones y Análisis
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.corrective_actions.label.text }}</label>
+              {{ form.corrective_actions(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Acciones tomadas inmediatamente...") }}
+            </div>
+            <div class="flex items-center">
+              <div class="flex items-center h-5">
+                {{ form.emergency_services_contacted(class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer", id="emergencyCheck") }}
+              </div>
+              <label for="emergencyCheck" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                {{ form.emergency_services_contacted.label.text }}
+              </label>
+            </div>
+            <div id="emergencyDetails" style="display:none;">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.emergency_details.label.text }}</label>
+              {{ form.emergency_details(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Ej: ambulancia, bomberos...") }}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.root_cause.label.text }}</label>
+              {{ form.root_cause(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Causa raíz aparente...") }}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.preventive_actions.label.text }}</label>
+              {{ form.preventive_actions(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Acciones preventivas propuestas...") }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Evidencia -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-5 py-4">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <span class="bg-white bg-opacity-20 rounded-lg px-2 py-1 text-sm">7</span>
+              Evidencia
+            </h3>
+          </div>
+          <div class="p-5 sm:p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.photo.label.text }}</label>
+              {{ form.photo(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer", accept="image/*") }}
+              <p class="mt-1 text-xs text-gray-500">Formatos permitidos: JPG, PNG, GIF</p>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.attachment.label.text }}</label>
+              {{ form.attachment(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer", accept=".pdf,.doc,.docx,.xls,.xlsx") }}
+              <p class="mt-1 text-xs text-gray-500">Formatos permitidos: PDF, Word, Excel</p>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ form.evidence_comment.label.text }}</label>
+              {{ form.evidence_comment(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all", placeholder="Comentario sobre la evidencia...") }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end pt-4">
+          {{ form.submit(class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer") }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mostrar/ocultar detalles de emergencia
+  const emergencyCheck = document.getElementById('emergencyCheck');
+  const emergencyDetails = document.getElementById('emergencyDetails');
+  emergencyCheck.addEventListener('change', function() {
+    emergencyDetails.style.display = this.checked ? 'block' : 'none';
+  });
+</script>
+{% endblock %}

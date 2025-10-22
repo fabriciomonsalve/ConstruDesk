@@ -9,31 +9,43 @@ from app.forms import LoginForm
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+
+
+# Función de ayuda para redirigir según rol
+def redirect_by_role(user):
+    if user.has_role('admin'):
+        return redirect(url_for('admin.admin_dashboard'))
+    elif user.has_role('editor'):
+        return redirect(url_for('editor.editor_dashboard'))
+    elif user.has_role('miembro'):
+        return redirect(url_for('miembro.miembro_dashboard'))
+    elif user.has_role('lector'):
+        return redirect(url_for('lector.lector_dashboard'))
+    else:
+        flash("No tienes acceso a ninguna sección", "danger")
+        return redirect(url_for('auth.login'))
+
 # Ruta de login
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm() 
+    form = LoginForm()
+
+    # 👇 Si ya está autenticado, no mostrar login, redirigir directo
+    if current_user.is_authenticated:
+        return redirect_by_role(current_user)
+
     if form.validate_on_submit():
         email_or_username = form.identifier.data
         password = form.password.data
 
-        user = AdminUser.query.filter((AdminUser.email == email_or_username) | (AdminUser.nombre == email_or_username)).first()
+        user = AdminUser.query.filter(
+            (AdminUser.email == email_or_username) | 
+            (AdminUser.nombre == email_or_username)
+        ).first()
 
         if user and user.check_password(password):
             login_user(user)
-
-            # Verificar el rol del usuario y redirigir
-            if user.has_role('admin'):
-                return redirect(url_for('admin.admin_dashboard'))
-            elif user.has_role('editor'):
-                return redirect(url_for('editor.editor_dashboard'))
-            elif user.has_role('miembro'):
-                return redirect(url_for('miembro.miembro_dashboard'))
-            elif user.has_role('lector'):
-                return redirect(url_for('lector.lector_dashboard'))
-            else:
-                flash("No tienes acceso a ninguna sección", "danger")
-                return redirect(url_for('auth.login'))
+            return redirect_by_role(user)
         else:
             flash("Correo o contraseña incorrectos", "danger")
     
