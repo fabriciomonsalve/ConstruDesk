@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
+  
+  <!-- Header -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-6">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0 relative">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Notificaciones</h1>
+        <p class="text-gray-600 text-sm mt-1">
+          {% if notificaciones %}
+            {{ notificaciones|length }} notificación{{ 'es' if notificaciones|length != 1 }} reciente{{ 's' if notificaciones|length != 1 }}
+          {% else %}
+            No hay notificaciones nuevas
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de notificaciones -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    {% if notificaciones %}
+      <div class="divide-y divide-gray-100">
+        {% for n in notificaciones %}
+        <div class="p-5 sm:p-6 hover:bg-gray-50 transition-colors duration-150">
+          <div class="flex items-start gap-4">
+            <!-- Icono de notificación -->
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+
+            <!-- Contenido -->
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-900 text-lg mb-2">{{ n.title }}</h3>
+              <p class="text-gray-700 leading-relaxed mb-3">{{ n.message }}</p>
+              
+              <div class="flex items-center gap-2 text-sm text-gray-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ n.created_at.strftime('%d/%m/%Y %H:%M') }}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <!-- Empty State -->
+      <div class="text-center py-16 px-6">
+        <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">No hay notificaciones</h3>
+        <p class="text-gray-500">Cuando tengas nuevas notificaciones aparecerán aquí</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Info adicional -->
+  {% if notificaciones %}
+  <div class="mt-6 bg-blue-50 rounded-xl border border-blue-100 p-4">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-sm font-semibold text-blue-900 mb-1">Sobre las notificaciones</h4>
+        <p class="text-sm text-blue-700">Las notificaciones se actualizan automáticamente cuando hay cambios en tus proyectos, tareas o aprobaciones.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

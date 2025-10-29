@@ -20,7 +20,7 @@ def redirect_by_role(user):
     elif user.has_role('miembro'):
         return redirect(url_for('miembro.miembro_dashboard'))
     elif user.has_role('lector'):
-        return redirect(url_for('lector.lector_dashboard'))
+        return redirect(url_for('lector.lector_documentos'))
     else:
         flash("No tienes acceso a ninguna sección", "danger")
         return redirect(url_for('auth.login'))

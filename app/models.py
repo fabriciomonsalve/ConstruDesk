@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db  # ✅ ya no genera loop
@@ -91,6 +92,14 @@ class Project(db.Model):
     status = db.Column(db.String(50), default='activo')  # Ej: activo, suspendido, finalizado
     archived = db.Column(db.Boolean, default=False)  # Indicador de archivo
     admin_comment = db.Column(db.Text)
+    # Presupuesto total del proyecto
+    total_budget = db.Column(db.Float, default=0.0)
+
+    # Archivo con detalle de presupuesto (opcional)
+    budget_file = db.Column(db.String(255))
+
+    # Archivo con cronograma planificado
+    schedule_file = db.Column(db.String(255))
     creator_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=False)
     creator = db.relationship('AdminUser', backref='created_projects')
     
@@ -311,3 +320,95 @@ class IncidentReport(db.Model):
         return f"<IncidentReport id={self.id}, project={self.project_id}, status={self.status}>"
 
 
+class TechnicalReport(db.Model):
+    __tablename__ = 'technical_reports'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    content = db.Column(db.Text, nullable=True)
+
+    # Identificación
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(ZoneInfo("America/Santiago")))
+    inspector = db.Column(db.String(120), nullable=False)
+    report_date = db.Column(db.Date, nullable=False)
+    period = db.Column(db.String(20), nullable=False)  # Semanal, quincenal, mensual
+
+    # Avance
+    general_progress = db.Column(db.Text, nullable=True)
+    progress_percentage = db.Column(db.Float, nullable=True)
+    next_tasks = db.Column(db.Text, nullable=True)
+
+    # Problemas
+    problems_found = db.Column(db.Text, nullable=True)
+    actions_taken = db.Column(db.Text, nullable=True)
+    evidence_photos = db.Column(db.String(255), nullable=True)  # ruta del archivo
+
+    # Recursos
+    weather_conditions = db.Column(db.String(100), nullable=True)
+    workers_on_site = db.Column(db.Integer, nullable=True)
+
+    # Resumen
+    additional_notes = db.Column(db.Text, nullable=True)
+
+    # Archivo PDF o adicional
+    attachment_path = db.Column(db.String(255), nullable=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=False)
+
+    project = db.relationship('Project', backref=db.backref('technical_reports', lazy=True))
+    user = db.relationship('AdminUser', backref='technical_reports')
+
+    def __repr__(self):
+        return f"<TechnicalReport {self.title} - {self.project.name}>"
+
+
+
+
+
+# Configuración de plantillas y flujos de aprobación
+class ConfigTemplate(db.Model):
+    __tablename__ = 'config_templates'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    file_path = db.Column(db.String(255), nullable=True)  # ruta a la plantilla (pdf, docx, xlsx)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f"<ConfigTemplate {self.name}>"
+
+class ApprovalFlow(db.Model):
+    __tablename__ = 'approval_flows'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    responsible_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=False)  # responsable de revisar
+    project_task_id = db.Column(db.Integer, db.ForeignKey('project_tasks.id'), nullable=True)
+    status = db.Column(db.String(50), default='pendiente')  # pendiente, aprobado, rechazado
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reviewed_at = db.Column(db.DateTime, nullable=True)
+
+    responsible = db.relationship('AdminUser', backref='approval_flows')
+    task = db.relationship('ProjectTask', backref='approval_flows')
+
+    def __repr__(self):
+        return f"<ApprovalFlow {self.name} - {self.status}>"
+
+class SystemNotification(db.Model):
+    __tablename__ = 'system_notifications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('admin_users.id'), nullable=True)
+    read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('AdminUser', backref='system_notifications')
+
+    def __repr__(self):
+        return f"<SystemNotification {self.title}>"

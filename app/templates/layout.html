@@ -15,7 +15,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif !important; 
-      background: #0f172a !important;
+      background-color: #c7c7c7 !important; /* Fondo oscuro */
     }
 
     .btn {
@@ -90,6 +90,17 @@
               <a href="{{ url_for('admin.admin_dashboard') }}" class="text-sm text-slate-300 hover:text-white transition-colors font-medium">
                 Panel Admin
               </a>
+              <a href="{{ url_for('admin.notificaciones') }}" class="relative">
+                🔔
+                {% set unread = current_user.system_notifications | selectattr("read", "equalto", False) | list | length %}
+                {% if unread > 0 %}
+                  <span class="absolute -top-1 -right-2 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                    {{ unread }}
+                  </span>
+                {% endif %}
+              </a>
+
+
             {% elif current_user.has_role('editor') %}
               <a href="{{ url_for('editor.editor_dashboard') }}" class="text-sm text-slate-300 hover:text-white transition-colors font-medium">
                 Dashboard Editor
@@ -135,6 +146,8 @@
           </svg>
         </button>
       </div>
+
+    
 
       <!-- Mobile Menu -->
       <div id="mobileMenu" class="hidden lg:hidden pb-4 mobile-menu-enter">
@@ -189,11 +202,11 @@
         <!-- Desktop Secondary Nav -->
         <div class="hidden md:flex items-center gap-1 py-3 overflow-x-auto">
           {% if current_user.has_role('admin') %}
-            <a href="{{ url_for('admin.admin_dashboard') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-              </svg>
-              Dashboard
+            <a href="{{ url_for('admin.dashboard_control') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Dashboard de Control
             </a>
             <a href="{{ url_for('admin.usuarios') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,37 +232,152 @@
               </svg>
               Incidencias
             </a>
-          {% elif current_user.has_role('editor') %}
-            <a href="{{ url_for('editor.editor_dashboard') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            <a href="{{ url_for('admin.ver_reportes') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M3 3v18h18M7 14l3-3 4 4 5-5"/>
               </svg>
-              Gestión de Documentos
+              Reportes Técnicos
             </a>
-            <a href="{{ url_for('editor.listar_proyectos') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            <a href="{{ url_for('admin.plantillas') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
+              </svg>
+              Plantillas
+            </a>
+            <a href="{{ url_for('admin.flujos_aprobacion') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M6 6h3m6 0h3m-9 0v12m6-12v12M6 18h3m6 0h3M9 12h6" />
+              </svg>
+              Flujos de Aprobación
+            </a>
+          {% elif current_user.has_role('editor') %}
+            <a href="{{ url_for('editor.editor_dashboard') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Documentos y Planos
+            </a>
+            <a href="{{ url_for('editor.listar_proyectos') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M3 17l6-6 4 4 8-8" />
               </svg>
               Avance de Obra
             </a>
+            <a href="{{ url_for('editor.listar_reportes') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M3 3v18h18M7 14l3-3 4 4 5-5" />
+              </svg>
+              Reportes Técnicos
+            </a>
+            <a href="{{ url_for('editor.ver_plantillas') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
+              </svg>
+              Plantillas
+            </a>
+            <a href="{{ url_for('editor.flujos_asignados') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M6 6h3m6 0h3m-9 0v12m6-12v12M6 18h3m6 0h3M9 12h6" />
+              </svg>
+              Flujos de Trabajo
+            </a>
           {% elif current_user.has_role('miembro') %}
-            <a href="{{ url_for('miembro.tareas_asignadas') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            <a href="{{ url_for('miembro.tareas_asignadas') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 12l2 2 4-4m2 9H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v12a2 2 0 01-2 2z" />
               </svg>
               Tareas Asignadas
             </a>
-            <a href="{{ url_for('miembro.mis_proyectos') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            <a href="{{ url_for('miembro.mis_proyectos') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 17l6-6 4 4 8-8" />
               </svg>
               Registro de Avances
             </a>
-            <a href="{{ url_for('miembro.incidencias_home') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            <a href="{{ url_for('miembro.incidencias_home') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 9v4m0 4h.01M10.29 3.86l-8.47 14.7A2 2 0 003.53 21h16.94a2 2 0 001.71-3.44l-8.47-14.7a2 2 0 00-3.42 0z" />
               </svg>
               Incidencias
+            </a>
+
+          {% elif current_user.has_role('lector') %}
+            <a href="{{ url_for('lector.dashboard') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M4 6h16M4 10h16M4 14h10M4 18h6" />
+              </svg>
+              Dashboard de Proyectos
+            </a>
+            <a href="{{ url_for('editor.editor_dashboard') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Documentos y Planos
             </a>
           {% endif %}
         </div>
@@ -258,67 +386,181 @@
         <div class="md:hidden py-3 overflow-x-auto">
           <div class="flex gap-2">
             {% if current_user.has_role('admin') %}
-              <a href="{{ url_for('admin.admin_dashboard') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <a href="{{ url_for('admin.dashboard_control') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
-                Dashboard
-              </a>
-              <a href="{{ url_for('admin.usuarios') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                </svg>
-                Usuarios
-              </a>
-              <a href="{{ url_for('admin.list_projects') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
-                </svg>
-                Proyectos
-              </a>
-              <a href="{{ url_for('admin.assign_user_to_project') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-                </svg>
-                Asignar Usuarios
-              </a>
-              <a href="{{ url_for('admin.listar_incidencias') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                </svg>
-                Incidencias
-              </a>
-            {% elif current_user.has_role('editor') %}
-              <a href="{{ url_for('editor.editor_dashboard') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Documentos
-              </a>
-              <a href="{{ url_for('editor.listar_proyectos') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-              </svg>
-              Avance de Obra
+                Dashboard de Control
             </a>
-            {% elif current_user.has_role('miembro') %}
-              <a href="{{ url_for('miembro.tareas_asignadas') }}" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                </svg>
-                Tareas
-              </a>
-              <a href="{{ url_for('miembro.mis_proyectos') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+            <a href="{{ url_for('admin.usuarios') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
               </svg>
-              Registro de Avances
+              Usuarios
             </a>
-            <a href="{{ url_for('miembro.incidencias_home') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+            <a href="{{ url_for('admin.list_projects') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+              </svg>
+              Proyectos
+            </a>
+            <a href="{{ url_for('admin.assign_user_to_project') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+              </svg>
+              Asignar Usuarios
+            </a>
+            <a href="{{ url_for('admin.listar_incidencias') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
               </svg>
               Incidencias
+            </a>
+            <a href="{{ url_for('admin.ver_reportes') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M3 3v18h18M7 14l3-3 4 4 5-5"/>
+              </svg>
+              Reportes Técnicos
+            </a>
+            <a href="{{ url_for('admin.plantillas') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
+              </svg>
+              Plantillas
+            </a>
+            <a href="{{ url_for('admin.flujos_aprobacion') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M6 6h3m6 0h3m-9 0v12m6-12v12M6 18h3m6 0h3M9 12h6" />
+              </svg>
+              Flujos de Aprobación
+            </a>
+            {% elif current_user.has_role('editor') %}
+              <a href="{{ url_for('editor.editor_dashboard') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                </svg>
+                Documentos y Planos
+              </a>
+              <a href="{{ url_for('editor.listar_proyectos') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M3 17l6-6 4 4 8-8" />
+                </svg>
+                Avance de Obra
+              </a>
+              <a href="{{ url_for('editor.listar_reportes') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M3 3v18h18M7 14l3-3 4 4 5-5" />
+                </svg>
+                Reportes Técnicos
+              </a>
+              <a href="{{ url_for('editor.ver_plantillas') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
+                </svg>
+                Plantillas
+              </a>
+              <a href="{{ url_for('editor.flujos_asignados') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M6 6h3m6 0h3m-9 0v12m6-12v12M6 18h3m6 0h3M9 12h6" />
+                </svg>
+                Flujos de Trabajo
+              </a>
+            {% elif current_user.has_role('miembro') %}
+              <a href="{{ url_for('miembro.tareas_asignadas') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12l2 2 4-4m2 9H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v12a2 2 0 01-2 2z" />
+                </svg>
+                Tareas Asignadas
+              </a>
+              <a href="{{ url_for('miembro.mis_proyectos') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 17l6-6 4 4 8-8" />
+                </svg>
+                Registro de Avances
+              </a>
+              <a href="{{ url_for('miembro.incidencias_home') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v4m0 4h.01M10.29 3.86l-8.47 14.7A2 2 0 003.53 21h16.94a2 2 0 001.71-3.44l-8.47-14.7a2 2 0 00-3.42 0z" />
+                </svg>
+                Incidencias
+              </a>
+            {% elif current_user.has_role('lector') %}
+            <a href="{{ url_for('lector.dashboard') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M4 6h16M4 10h16M4 14h10M4 18h6" />
+              </svg>
+              Dashboard de Proyectos
+            </a>
+            <a href="{{ url_for('editor.editor_dashboard') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Documentos y Planos
             </a>
             {% endif %}
           </div>
@@ -336,9 +578,9 @@
   <footer class="bg-slate-900 border-t border-slate-800 mt-auto">
     <div class="max-w-full mx-auto px-3 sm:px-4 lg:px-6 py-6">
       <div class="text-center">
-        <p class="text-slate-400 text-sm">
+        <p class="text-white text-sm">
           © {{ config.STORE_NAME or "Kodesk.cl" }} · Todos los derechos reservados 
-          <span class="text-slate-500">leucode.IA®</span>
+          <span class="text-gray-400">leucode.IA®</span>
         </p>
       </div>
     </div>

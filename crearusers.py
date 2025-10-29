@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 
 # Lista de usuarios a crear con los nuevos roles (sin el rol 'usuario')
 USERS = [
-    ("ventas@kodesk.cl", "leucodeops", "admin"),  
+    ("ventas@kodesk.cl", "leucodeops", "admin"),              
     ("soporte@kodesk.cl", "support123", "admin"),
     ("editor@kodesk.cl", "editorpass", "editor"),
     ("miembro@kodesk.cl", "miembro123", "miembro"),

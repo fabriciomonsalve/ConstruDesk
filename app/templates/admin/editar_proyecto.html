@@ -2,85 +2,119 @@
 
 {% block content %}
   <div class="container mx-auto mt-10 px-4">
-    <h2 class="text-3xl font-semibold text-center text-white mb-8">Editar Proyecto: {{ project.name }}</h2>
+    <h2 class="text-3xl font-semibold text-center text-white mb-8">✏️ Editar Proyecto: {{ project.name }}</h2>
 
-    <!-- Contenedor más pequeño y centrado -->
     <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         
         <div class="space-y-6">
-          <!-- Nombre del Proyecto -->
+
+          <!-- Nombre -->
           <div class="form-group">
-            <label for="name" class="block text-sm font-medium text-gray-700">Nombre del Proyecto</label>
+            <label class="block text-sm font-medium text-gray-700">Nombre del Proyecto</label>
             {{ form.name(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
             {% for error in form.name.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
+              <p class="text-sm text-red-500">{{ error }}</p>
             {% endfor %}
           </div>
 
           <!-- Descripción -->
           <div class="form-group">
-            <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+            <label class="block text-sm font-medium text-gray-700">Descripción</label>
             {{ form.description(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
-            {% for error in form.description.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
-            {% endfor %}
           </div>
 
-          <!-- Fecha de Inicio -->
+          <!-- Fecha Inicio -->
           <div class="form-group">
-            <label for="start_date" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+            <label class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
             {{ form.start_date(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
-            {% for error in form.start_date.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
-            {% endfor %}
           </div>
 
-          <!-- Fecha de Fin -->
+          <!-- Fecha Fin -->
           <div class="form-group">
-            <label for="end_date" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+            <label class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
             {{ form.end_date(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
-            {% for error in form.end_date.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
-            {% endfor %}
           </div>
 
           <!-- Progreso -->
           <div class="form-group">
-            <label for="progress" class="block text-sm font-medium text-gray-700">Progreso (%)</label>
+            <label class="block text-sm font-medium text-gray-700">Progreso (%)</label>
             {{ form.progress(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
-            {% for error in form.progress.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
-            {% endfor %}
           </div>
 
           <!-- Estado -->
           <div class="form-group">
-            <label for="status" class="block text-sm font-medium text-gray-700">Estado</label>
+            <label class="block text-sm font-medium text-gray-700">Estado</label>
             {{ form.status(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
-            {% for error in form.status.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
-            {% endfor %}
           </div>
 
-          <!-- Comentario del Administrador -->
+          <!-- Comentario Admin -->
           <div class="form-group">
-            <label for="admin_comment" class="block text-sm font-medium text-gray-700">Comentario del Administrador</label>
+            <label class="block text-sm font-medium text-gray-700">Comentario del Administrador</label>
             {{ form.admin_comment(class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black") }}
-            {% for error in form.admin_comment.errors %}
-              <div class="text-sm text-red-500">{{ error }}</div>
+          </div>
+
+          <!-- 💰 Presupuesto Total (CLP) -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700">Presupuesto Total (CLP)</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+              {{ form.total_budget(class="pl-8 mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-black", value="{:,.0f}".format(project.total_budget or 0).replace(',', '.')) }}
+            </div>
+            {% for error in form.total_budget.errors %}
+              <p class="text-sm text-red-500">{{ error }}</p>
             {% endfor %}
           </div>
 
-          <!-- Botón de Enviar -->
+          <!-- 📄 Archivo Presupuesto -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700">Archivo de Presupuesto (PDF o Excel)</label>
+            {% if project.budget_file %}
+              <p class="text-sm text-gray-600 mb-2">📎 Archivo actual: 
+                <a href="{{ url_for('static', filename=project.budget_file) }}" class="text-blue-600 underline" target="_blank">
+                  {{ project.budget_file.split('/')[-1] }}
+                </a>
+              </p>
+            {% endif %}
+            {{ form.budget_file(class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 text-black") }}
+          </div>
+
+          <!-- 🗓️ Archivo Cronograma -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700">Archivo de Cronograma (PDF o Excel)</label>
+            {% if project.schedule_file %}
+              <p class="text-sm text-gray-600 mb-2">📎 Archivo actual: 
+                <a href="{{ url_for('static', filename=project.schedule_file) }}" class="text-blue-600 underline" target="_blank">
+                  {{ project.schedule_file.split('/')[-1] }}
+                </a>
+              </p>
+            {% endif %}
+            {{ form.schedule_file(class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 text-black") }}
+          </div>
+
+          <!-- 🔘 Botón -->
           <div class="text-center">
             <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 transition duration-300">
-              Actualizar Proyecto
+              💾 Guardar Cambios
             </button>
           </div>
+
         </div>
       </form>
     </div>
   </div>
+
+  <!-- 💅 Formato CLP automático -->
+  <script>
+    const input = document.querySelector('input[name="total_budget"]');
+    if (input) {
+      input.addEventListener('input', () => {
+        let value = input.value.replace(/\D/g, '');
+        if (value) {
+          input.value = new Intl.NumberFormat('es-CL').format(value);
+        }
+      });
+    }
+  </script>
 {% endblock %}

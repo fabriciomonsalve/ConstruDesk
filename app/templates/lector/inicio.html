@@ -1,141 +1,157 @@
 {% extends "layout.html" %}
-{% block title %}Panel administrador · Kodesk{% endblock %}
 
 {% block content %}
-<section class="container mx-auto px-4 py-12">
-  <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
-      📊 Panel Supervisor
-    </h2>
-    <a href="{{ url_for('auth.logout') }}"
-       class="px-4 py-2 rounded-lg bg-rose-700 text-white hover:bg-rose-600 text-sm font-semibold w-max">
-      Cerrar sesión
-    </a>
-  </div>
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
 
-  <!-- Stats -->
-  <div class="grid sm:grid-cols-3 gap-6 mb-10">
-    <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
-      <p class="text-slate-400 text-sm">Total mensajes</p>
-      <p class="text-3xl font-black text-[var(--brand-2)]">{{ mensajes|length }}</p>
-    </div>
-    <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
-      <p class="text-slate-400 text-sm">Pendientes</p>
-      <p class="text-3xl font-black text-amber-400">
-        {{ mensajes|selectattr("leido", "equalto", False)|list|length }}
-      </p>
-    </div>
-    <div class="card p-5 shadow-soft ring-1 ring-slate-800/70 text-center">
-      <p class="text-slate-400 text-sm">Leídos</p>
-      <p class="text-3xl font-black text-emerald-400">
-        {{ mensajes|selectattr("leido", "equalto", True)|list|length }}
-      </p>
-    </div>
-  </div>
+      <button id="helpButton"
+        class="fixed bottom-6 right-6 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg z-50 hover:bg-blue-700 flex items-center justify-center text-2xl font-bold">
+        ?
+      </button>
 
-  <!-- Tabla (solo visible en pantallas >= sm) -->
-<div class="hidden sm:block overflow-x-auto rounded-lg border border-slate-800">
-  <table class="min-w-full text-sm">
-    <thead class="bg-slate-800 text-slate-200 text-left">
-      <tr>
-        <th class="px-4 py-2">#</th>
-        <th class="px-4 py-2">Nombre</th>
-        <th class="px-4 py-2">Email</th>
-        <th class="px-4 py-2">Teléfono</th>
-        <th class="px-4 py-2">Empresa</th>
-        <th class="px-4 py-2">Mensaje</th>
-        <th class="px-4 py-2">Fecha</th>
-        <th class="px-4 py-2 text-center">Estado</th>
-        <th class="px-4 py-2 text-center">Acciones</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-slate-800">
-      {% for m in mensajes %}
-      <tr class="{% if not m.leido %}bg-slate-900/40{% endif %}">
-        <td class="px-4 py-2">{{ m.id }}</td>
-        <td class="px-4 py-2 font-medium">{{ m.nombre }}</td>
-        <td class="px-4 py-2">
-          <a href="mailto:{{ m.email }}" class="text-[var(--brand-2)] hover:underline">{{ m.email }}</a>
-        </td>
-        <td class="px-4 py-2">{{ m.telefono or '-' }}</td>
-        <td class="px-4 py-2">{{ m.empresa or '-' }}</td>
-        <td class="px-4 py-2 max-w-[200px] truncate" title="{{ m.mensaje }}">{{ m.mensaje }}</td>
-        <td class="px-4 py-2 whitespace-nowrap">{{ m.fecha.strftime("%d-%m-%Y %H:%M") }}</td>
-        <td class="px-4 py-2 text-center">
-          {% if m.leido %}
-            <span class="px-2 py-1 text-xs rounded-full bg-emerald-700/40 text-emerald-300">✔️ Leído</span>
-          {% else %}
-            <span class="px-2 py-1 text-xs rounded-full bg-amber-700/40 text-amber-300">📩 Pendiente</span>
-          {% endif %}
-        </td>
-        <td class="px-4 py-2 text-center flex flex-wrap gap-2 justify-center">
-          <form method="POST" action="{{ url_for('admin.toggle_mensaje', id=m.id) }}">
-            <button type="submit"
-              class="px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 text-white">
-              {% if m.leido %}Marcar no leído{% else %}Marcar leído{% endif %}
-            </button>
-          </form>
-          <form method="POST" action="{{ url_for('admin.delete_mensaje', id=m.id) }}"
-                onsubmit="return confirm('¿Seguro que deseas eliminar este mensaje?');">
-            <button type="submit"
-              class="px-2 py-1 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">
-              🗑️ Eliminar
-            </button>
-          </form>
-        </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="9" class="px-4 py-6 text-center text-slate-400">No hay mensajes aún.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+      <!-- Panel lateral (Ayuda) -->
+      <div id="helpPanel" class="fixed inset-0 bg-gray-900/40 hidden z-40">
+        <div id="helpContent"
+          class="absolute right-0 top-0 h-full w-3/4 sm:w-1/2 md:w-1/3 bg-white shadow-xl transform translate-x-full transition-transform duration-300">
+          <div class="flex justify-between items-center p-4 border-b">
+            <h2 class="text-lg font-semibold">Manual del módulo</h2>
+            <button id="closeHelp" class="text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+          </div>
+          <div class="p-4 h-[calc(100%-3rem)] overflow-y-auto">
+            <iframe src="{{ url_for('static', filename='manuales/documentos.pdf') }}" 
+                    class="w-full h-full border-none rounded-lg"></iframe>
+          </div>
+        </div>
+      </div>
 
-<!-- Vista tipo cards (solo visible en móviles) -->
-<div class="grid gap-4 sm:hidden">
-  {% for m in mensajes %}
-  <div class="card p-4 shadow-soft ring-1 ring-slate-800/70">
-    <div class="flex justify-between items-center mb-2">
-      <span class="text-sm text-slate-400">#{{ m.id }}</span>
-      {% if m.leido %}
-        <span class="px-2 py-1 text-xs rounded-full bg-emerald-700/40 text-emerald-300">✔️ Leído</span>
-      {% else %}
-        <span class="px-2 py-1 text-xs rounded-full bg-amber-700/40 text-amber-300">📩 Pendiente</span>
+      <script>
+        const helpButton = document.getElementById('helpButton');
+        const helpPanel = document.getElementById('helpPanel');
+        const helpContent = document.getElementById('helpContent');
+        const closeHelp = document.getElementById('closeHelp');
+
+        helpButton.addEventListener('click', () => {
+          helpPanel.classList.remove('hidden');
+          setTimeout(() => helpContent.classList.remove('translate-x-full'), 10);
+        });
+
+        closeHelp.addEventListener('click', () => {
+          helpContent.classList.add('translate-x-full');
+          setTimeout(() => helpPanel.classList.add('hidden'), 300);
+        });
+
+        helpPanel.addEventListener('click', (e) => {
+          if (e.target === helpPanel) {
+            helpContent.classList.add('translate-x-full');
+            setTimeout(() => helpPanel.classList.add('hidden'), 300);
+          }
+        });
+      </script>
+
+      
+      <!-- Header Section -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="p-3 bg-blue-600 rounded-xl">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">Gestión de Documentos y Planos</h1>
+        </div>
+        <p class="text-gray-600 ml-16">Administra los documentos y tareas de tus proyectos</p>
+      </div>
+
+
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for project in projects %}
+          <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 group">
+            
+            <!-- Header Card minimalista -->
+            <div class="p-6 border-b border-gray-100">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-gray-900 mb-1 line-clamp-2">{{ project.name }}</h3>
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full
+                    {{ 'bg-green-100 text-green-700' if project.status == 'activo' else 'bg-gray-100 text-gray-600' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ 'bg-green-500' if project.status == 'activo' else 'bg-gray-400' }}"></span>
+                    {{ project.status|capitalize }}
+                  </span>
+                </div>
+                <div class="p-2 bg-gray-50 rounded-lg">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content Card -->
+            <div class="p-6">
+              <!-- Descripción -->
+              <div class="mb-5">
+                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                  {{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}
+                </p>
+              </div>
+
+              <!-- Fechas minimalistas -->
+              <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3 text-sm">
+                  <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <span class="text-gray-500">Inicio:</span>
+                  <span class="text-gray-900 font-semibold ml-auto">{{ project.start_date.strftime('%d/%m/%Y') }}</span>
+                </div>
+                
+                <div class="flex items-center gap-3 text-sm">
+                  <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  </svg>
+                  <span class="text-gray-500">Fin:</span>
+                  <span class="text-gray-900 font-semibold ml-auto">
+                    {% if project.end_date %}
+                      {{ project.end_date.strftime('%d/%m/%Y') }}
+                    {% else %}
+                      <span class="text-gray-400 italic">Sin definir</span>
+                    {% endif %}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Botones de acción minimalistas -->
+              <div class="grid grid-cols-2 gap-3">
+                <a href="{{ url_for('lector.view_documents', project_id=project.id) }}" 
+                   class="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all duration-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <span>Documentos</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Estado vacío -->
+      {% if not projects %}
+      <div class="text-center py-16">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-3">No hay proyectos disponibles</h3>
+        <p class="text-gray-500 max-w-md mx-auto">Los proyectos aparecerán aquí una vez que sean creados.</p>
+      </div>
       {% endif %}
-    </div>
-    <p class="font-semibold">{{ m.nombre }}</p>
-    <p class="text-[var(--brand-2)] text-sm"><a href="mailto:{{ m.email }}">{{ m.email }}</a></p>
-    <p class="text-sm text-slate-400">📞 {{ m.telefono or '-' }}</p>
-    <p class="text-sm text-slate-400">🏢 {{ m.empresa or '-' }}</p>
-    <p class="text-sm mt-2">{{ m.mensaje }}</p>
-    <p class="text-xs text-slate-500 mt-1">{{ m.fecha.strftime("%d-%m-%Y %H:%M") }}</p>
 
-    <!-- Acciones -->
-    <div class="flex gap-2 mt-3">
-      <form method="POST" action="{{ url_for('admin.toggle_mensaje', id=m.id) }}" class="flex-1">
-        <button type="submit"
-          class="w-full px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 text-white">
-          {% if m.leido %}Marcar no leído{% else %}Marcar leído{% endif %}
-        </button>
-      </form>
-      <form method="POST" action="{{ url_for('admin.delete_mensaje', id=m.id) }}"
-            onsubmit="return confirm('¿Seguro que deseas eliminar este mensaje?');" class="flex-1">
-        <button type="submit"
-          class="w-full px-2 py-1 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">
-          🗑️ Eliminar
-        </button>
-      </form>
     </div>
   </div>
-  {% else %}
-  <p class="text-center text-slate-400">No hay mensajes aún.</p>
-  {% endfor %}
 </div>
-
-
-  </div>
-</section>
 {% endblock %}

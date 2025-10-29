@@ -1,0 +1,155 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-7xl">
+  <!-- Contenedor blanco principal -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Reportes Técnicos</h1>
+        <p class="text-gray-500 text-sm mt-1">Gestiona y organiza tus informes</p>
+      </div>
+      <a href="{{ url_for('editor.nuevo_reporte') }}"
+         class="inline-flex items-center justify-center px-5 py-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md font-medium text-sm whitespace-nowrap">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Nuevo Reporte
+      </a>
+    </div>
+
+    {% if reportes %}
+    <!-- Desktop Table View -->
+    <div class="hidden lg:block bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-100 border-b border-gray-200">
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Título</th>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Proyecto</th>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fecha</th>
+            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+          {% for r in reportes %}
+          <tr class="hover:bg-gray-50 transition-colors duration-150">
+            <td class="px-6 py-4">
+              <p class="font-semibold text-gray-900">{{ r.title or "Sin título" }}</p>
+            </td>
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                {{ r.project.name }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-gray-600 text-sm">{{ r.created_at.strftime('%d/%m/%Y') }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <a href="{{ url_for('editor.ver_reporte', reporte_id=r.id) }}"
+                   class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-150 text-sm font-medium">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  Ver
+                </a>
+                <a href="{{ url_for('editor.editar_reporte', reporte_id=r.id) }}"
+                   class="inline-flex items-center px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition-colors duration-150 text-sm font-medium">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                  Editar
+                </a>
+                <form action="{{ url_for('editor.eliminar_reporte', reporte_id=r.id) }}"
+                      method="POST"
+                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este reporte técnico?');"
+                      class="inline">
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors duration-150 text-sm font-medium">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Eliminar
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div class="lg:hidden space-y-4">
+      {% for r in reportes %}
+      <div class="bg-gray-50 rounded-xl border border-gray-200 p-5 hover:bg-gray-100 transition-colors duration-200">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-900 text-lg mb-1">{{ r.title or "Sin título" }}</h3>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              {{ r.project.name }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="flex items-center text-gray-500 text-sm mb-4">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          {{ r.created_at.strftime('%d/%m/%Y') }}
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <a href="{{ url_for('editor.ver_reporte', reporte_id=r.id) }}"
+             class="flex-1 min-w-fit inline-flex items-center justify-center px-4 py-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors duration-150 text-sm font-medium">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            Ver
+          </a>
+          <a href="{{ url_for('editor.editar_reporte', reporte_id=r.id) }}"
+             class="flex-1 min-w-fit inline-flex items-center justify-center px-4 py-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors duration-150 text-sm font-medium">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Editar
+          </a>
+          <form action="{{ url_for('editor.eliminar_reporte', reporte_id=r.id) }}"
+                method="POST"
+                onsubmit="return confirm('¿Estás seguro de que deseas eliminar este reporte técnico?');"
+                class="flex-1 min-w-fit">
+            <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors duration-150 text-sm font-medium">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              Eliminar
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center">
+      <div class="max-w-md mx-auto">
+        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">No hay reportes técnicos</h3>
+        <p class="text-gray-500 mb-6">Comienza creando tu primer reporte técnico para gestionar tus proyectos</p>
+        <a href="{{ url_for('editor.nuevo_reporte') }}"
+           class="inline-flex items-center justify-center px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md font-medium">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Crear primer reporte
+        </a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

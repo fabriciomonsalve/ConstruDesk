@@ -1,9 +1,10 @@
 import datetime
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, DateTimeField, DateTimeLocalField, FileField, HiddenField, IntegerField, MultipleFileField, SelectField, StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import BooleanField, DateField, DateTimeField, DateTimeLocalField, FileField, FloatField, HiddenField, IntegerField, MultipleFileField, SelectField, StringField, PasswordField, SubmitField, TextAreaField, ValidationError
 from wtforms.validators import DataRequired, Email, Optional, Length
 from datetime import datetime  # Cambiar esta línea
 from flask_wtf.file import FileAllowed
+from wtforms.validators import NumberRange
 
 
 
@@ -26,13 +27,61 @@ class CreateUserForm(FlaskForm):
 
 
 class ProjectForm(FlaskForm):
+    # Datos básicos
     name = StringField('Nombre del Proyecto', validators=[DataRequired()])
     description = TextAreaField('Descripción', validators=[DataRequired()])
-    start_date = DateTimeField('Fecha de Inicio', default=datetime.utcnow, format='%Y-%m-%d %H:%M:%S', validators=[DataRequired()])
-    end_date = DateTimeField('Fecha de Fin', format='%Y-%m-%d %H:%M:%S', validators=[Optional()])
-    progress = IntegerField('Progreso (%)', default=0, validators=[Optional()])
-    status = SelectField('Estado', choices=[('activo', 'Activo'), ('suspendido', 'Suspendido'), ('finalizado', 'Finalizado')], default='activo')
+
+    # Fechas
+    start_date = DateTimeField(
+        'Fecha de Inicio',
+        default=datetime.utcnow,
+        format='%Y-%m-%d %H:%M:%S',
+        validators=[DataRequired()]
+    )
+    end_date = DateTimeField(
+        'Fecha de Fin',
+        format='%Y-%m-%d %H:%M:%S',
+        validators=[Optional()]
+    )
+
+    # Estado y progreso
+    progress = IntegerField(
+        'Progreso (%)',
+        default=0,
+        validators=[Optional(), NumberRange(min=0, max=100)]
+    )
+    status = SelectField(
+        'Estado',
+        choices=[
+            ('activo', 'Activo'),
+            ('suspendido', 'Suspendido'),
+            ('finalizado', 'Finalizado')
+        ],
+        default='activo'
+    )
+
     admin_comment = TextAreaField('Comentario del Administrador', validators=[Optional()])
+
+    total_budget = StringField('Presupuesto Total (CLP)', validators=[Optional()])
+
+    def validate_total_budget_clp(self, field):
+        value = field.data.replace('.', '').replace(',', '').strip()
+        if not value.isdigit():
+            raise ValidationError('Debe ingresar solo números.')
+        field.data = float(value)
+
+    # 📄 Archivo de presupuesto (PDF o Excel)
+    budget_file = FileField(
+        'Archivo de Presupuesto (PDF o Excel)',
+        validators=[Optional(), FileAllowed(['pdf', 'xls', 'xlsx'], 'Formatos permitidos: PDF, XLS, XLSX')]
+    )
+
+    # 🗓️ Archivo de cronograma (PDF o Excel)
+    schedule_file = FileField(
+        'Archivo de Cronograma (PDF o Excel)',
+        validators=[Optional(), FileAllowed(['pdf', 'xls', 'xlsx'], 'Formatos permitidos: PDF, XLS, XLSX')]
+    )
+
     submit = SubmitField('Guardar Proyecto')
 
 
@@ -111,3 +160,36 @@ class IncidentReportForm(FlaskForm):
 
     # Submit
     submit = SubmitField("Enviar reporte")
+
+
+
+
+
+class TechnicalReportForm(FlaskForm):
+    # Identificación
+    project_id = SelectField('Proyecto', coerce=int, validators=[DataRequired()])
+    report_date = DateField('Fecha', validators=[DataRequired()])
+    inspector = StringField('Inspector', validators=[DataRequired()])
+    period = SelectField('Periodo', choices=[('Semanal', 'Semanal'), ('Quincenal', 'Quincenal'), ('Mensual', 'Mensual')], validators=[DataRequired()])
+
+    # Avance
+    general_progress = TextAreaField('Avance General', validators=[Optional()])
+    progress_percentage = FloatField('Porcentaje de Avance', validators=[Optional()])
+    next_tasks = TextAreaField('Próximas Tareas', validators=[Optional()])
+
+    # Problemas
+    problems_found = TextAreaField('Problemas Encontrados', validators=[Optional()])
+    actions_taken = TextAreaField('Acciones Tomadas', validators=[Optional()])
+    evidence_photos = FileField('Fotos de Evidencia')
+
+    # Recursos
+    weather_conditions = StringField('Condiciones Climáticas', validators=[Optional()])
+    workers_on_site = IntegerField('Personal en Obra', validators=[Optional()])
+
+    # Resumen
+    additional_notes = TextAreaField('Observaciones Adicionales', validators=[Optional()])
+
+    # Adjuntos
+    attachment_path = FileField('Documento adjunto')
+
+    submit = SubmitField('Guardar Reporte')

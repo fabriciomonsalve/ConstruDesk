@@ -1,12 +1,13 @@
 from asyncio import Task
 from datetime import datetime
 import os
+from zoneinfo import ZoneInfo
 from flask import Blueprint, abort, app, current_app, flash, redirect, render_template, send_from_directory, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from app import db
 from app.forms import NuevoChecklistItemForm, ProgressForm
-from app.models import AdminUser, Comment, DailyChecklist, ProgressPhoto, Project, ProjectDocument, ProjectProgress, ProjectTask, ProjectUserRole
+from app.models import AdminUser, ApprovalFlow, Comment, ConfigTemplate, DailyChecklist, ProgressPhoto, Project, ProjectDocument, ProjectProgress, ProjectTask, ProjectUserRole, TechnicalReport
 from flask import request
 import pytz
 
@@ -405,6 +406,281 @@ def task_comments(project_id, task_id):
         return render_template('editor/_comments_partial.html', comments=comments)
 
     return render_template('editor/task_comments.html', project=project, task=task, comments=comments)
+
+
+
+@editor_bp.route('/reportes')
+@login_required
+def listar_reportes():
+    reportes = TechnicalReport.query.filter_by(user_id=current_user.id).order_by(TechnicalReport.created_at.desc()).all()
+    return render_template('editor/listar_reportes.html', reportes=reportes)
+
+
+@editor_bp.route('/reportes/nuevo', methods=['GET', 'POST'])
+@login_required
+def nuevo_reporte():
+    proyectos = Project.query.all()
+    chile_tz = pytz.timezone("America/Santiago")
+    ahora_chile = datetime.now(chile_tz)
+
+    if request.method == 'POST':
+        # Variables de Identificación
+        project_id = request.form.get('project_id')
+        report_date = request.form.get('report_date')
+        inspector = request.form.get('inspector')
+        period = request.form.get('period')
+
+        # Variables de Avance
+        general_progress = request.form.get('general_progress')
+        progress_percentage = request.form.get('progress_percentage')
+        next_tasks = request.form.get('next_tasks')
+
+        # Variables de Problemas
+        problems_found = request.form.get('problems_found')
+        actions_taken = request.form.get('actions_taken')
+        evidence_photo = request.files.get('evidence_photos')
+
+        # 🔹 Variables de Recursos
+        weather_conditions = request.form.get('weather_conditions')
+        workers_on_site = request.form.get('workers_on_site')
+
+        # 🔹 Resumen
+        additional_notes = request.form.get('additional_notes')
+
+        # 🔹 Campos existentes
+        title = request.form.get('title')
+        content = request.form.get('content')
+        start_date = request.form.get('start_date')
+        end_date = request.form.get('end_date')
+        archivo = request.files.get('attachment')
+
+        # --- Manejo de archivos adjuntos ---
+        attachment_path = None
+        if archivo and archivo.filename:
+            filename = secure_filename(archivo.filename)
+            upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'reportes')
+            os.makedirs(upload_folder, exist_ok=True)
+            path = os.path.join(upload_folder, filename)
+            archivo.save(path)
+            attachment_path = f'uploads/reportes/{filename}'
+
+        # --- Manejo de fotos de evidencia ---
+        evidence_photo_path = None
+        if evidence_photo and evidence_photo.filename:
+            photo_filename = secure_filename(evidence_photo.filename)
+            photo_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'reportes')
+            os.makedirs(photo_folder, exist_ok=True)
+            photo_path = os.path.join(photo_folder, photo_filename)
+            evidence_photo.save(photo_path)
+            evidence_photo_path = f'uploads/reportes/{photo_filename}'
+
+        # --- Crear el reporte ---
+        reporte = TechnicalReport(
+            title=title,
+            content=content,
+            project_id=project_id,
+            user_id=current_user.id,
+            created_at=ahora_chile,
+            attachment_path=attachment_path,
+            inspector=inspector,
+            report_date=datetime.strptime(report_date, "%Y-%m-%d") if report_date else None,
+            period=period,
+            general_progress=general_progress,
+            progress_percentage=float(progress_percentage) if progress_percentage else None,
+            next_tasks=next_tasks,
+            problems_found=problems_found,
+            actions_taken=actions_taken,
+            evidence_photos=evidence_photo_path,
+            weather_conditions=weather_conditions,
+            workers_on_site=int(workers_on_site) if workers_on_site else None,
+            additional_notes=additional_notes
+        )
+
+        db.session.add(reporte)
+        db.session.commit()
+
+        flash('✅ Reporte técnico creado exitosamente.', 'success')
+        return redirect(url_for('editor.listar_reportes'))
+
+    return render_template('editor/nuevo_reporte.html', proyectos=proyectos)
+
+
+
+@editor_bp.route('/reportes/ver/<int:reporte_id>')
+@login_required
+def ver_reporte(reporte_id):
+    reporte = TechnicalReport.query.get_or_404(reporte_id)
+    proyecto = Project.query.get(reporte.project_id)
+    return render_template('editor/ver_reporte.html', reporte=reporte, proyecto=proyecto)
+
+# Ruta para descargar el archivo adjunto de un reporte
+@editor_bp.route('/reportes/descargar/<int:reporte_id>')
+@login_required
+def descargar_reporte_archivo(reporte_id):
+    reporte = TechnicalReport.query.get_or_404(reporte_id)
+
+    if not reporte.attachment_path:
+        flash('Este reporte no tiene archivo adjunto.', 'warning')
+        return redirect(url_for('editor.ver_reporte', reporte_id=reporte.id))
+
+    upload_folder = os.path.join(current_app.root_path, 'static')
+    file_path = os.path.join(upload_folder, reporte.attachment_path)
+
+    if not os.path.exists(file_path):
+        abort(404, description=f"Archivo no encontrado: {file_path}")
+
+    directory = os.path.dirname(file_path)
+    filename = os.path.basename(file_path)
+
+    return send_from_directory(directory, filename, as_attachment=True)
+
+
+@editor_bp.route('/reportes/editar/<int:reporte_id>', methods=['GET', 'POST'])
+@login_required
+def editar_reporte(reporte_id):
+    reporte = TechnicalReport.query.get_or_404(reporte_id)
+    proyectos = Project.query.all()
+
+    if request.method == 'POST':
+        # ✅ Campos de texto y selección
+        reporte.project_id = int(request.form.get('project_id')) if request.form.get('project_id') else None
+        reporte.inspector = request.form.get('inspector')
+        reporte.period = request.form.get('period')
+        reporte.general_progress = request.form.get('general_progress')
+        reporte.next_tasks = request.form.get('next_tasks')
+        reporte.problems_found = request.form.get('problems_found')
+        reporte.actions_taken = request.form.get('actions_taken')
+        reporte.weather_conditions = request.form.get('weather_conditions')
+        reporte.additional_notes = request.form.get('additional_notes')
+
+        # ✅ Fecha (convertir string a objeto date)
+        date_str = request.form.get('report_date')
+        if date_str:
+            try:
+                reporte.report_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                flash("⚠️ Fecha inválida. Usa el formato AAAA-MM-DD.", "warning")
+                return redirect(request.url)
+
+        # ✅ Numéricos (con control si están vacíos)
+        progress_str = request.form.get('progress_percentage')
+        reporte.progress_percentage = float(progress_str) if progress_str else None
+
+        workers_str = request.form.get('workers_on_site')
+        reporte.workers_on_site = int(workers_str) if workers_str else None
+
+        # ✅ Imagen de evidencia (si se reemplaza)
+        evidence_photo = request.files.get('evidence_photos')
+        if evidence_photo and evidence_photo.filename:
+            filename = secure_filename(evidence_photo.filename)
+            upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'fotos')
+            os.makedirs(upload_folder, exist_ok=True)
+            file_path = os.path.join(upload_folder, filename)
+            evidence_photo.save(file_path)
+            reporte.evidence_photos = f'uploads/fotos/{filename}'
+
+        # ✅ Documento adjunto (si se reemplaza)
+        archivo = request.files.get('attachment')
+        if archivo and archivo.filename:
+            filename = secure_filename(archivo.filename)
+            upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'reportes')
+            os.makedirs(upload_folder, exist_ok=True)
+            file_path = os.path.join(upload_folder, filename)
+            archivo.save(file_path)
+            reporte.attachment_path = f'uploads/reportes/{filename}'
+
+        # ✅ Guardar cambios
+        try:
+            db.session.commit()
+            flash('✅ Reporte técnico actualizado correctamente.', 'success')
+            return redirect(url_for('editor.ver_reporte', reporte_id=reporte.id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"❌ Error al actualizar el reporte: {e}", "danger")
+
+    return render_template('editor/editar_reporte.html', reporte=reporte, proyectos=proyectos)
+
+
+# Ruta para eliminar un reporte técnico
+@editor_bp.route('/reportes/eliminar/<int:reporte_id>', methods=['POST'])
+@login_required
+def eliminar_reporte(reporte_id):
+    reporte = TechnicalReport.query.get_or_404(reporte_id)
+
+    if reporte.attachment_path:
+        file_path = os.path.join(current_app.root_path, 'static', reporte.attachment_path)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    # Borramos el registro de la base de datos
+    db.session.delete(reporte)
+    db.session.commit()
+
+    flash('Reporte técnico eliminado correctamente.', 'success')
+    return redirect(url_for('editor.listar_reportes'))
+
+
+
+
+
+@editor_bp.route('/plantillas')
+@login_required
+def ver_plantillas():
+    templates = ConfigTemplate.query.filter_by(is_active=True).all()
+    return render_template('editor/plantillas.html', templates=templates)
+
+
+@editor_bp.route('/flujos')
+@login_required
+def flujos_asignados():
+    # Solo flujos donde el usuario actual es responsable
+    flows = ApprovalFlow.query.filter_by(responsible_id=current_user.id).order_by(ApprovalFlow.created_at.desc()).all()
+    return render_template('editor/flujos.html', flows=flows)
+
+
+@editor_bp.route('/flujos/actualizar/<int:flow_id>', methods=['POST'])
+@login_required
+def actualizar_flujo(flow_id):
+    flow = ApprovalFlow.query.get_or_404(flow_id)
+
+    # Solo el responsable (editor asignado) puede modificarlo
+    if flow.responsible_id != current_user.id:
+        flash("❌ No tienes permiso para modificar este flujo.", "danger")
+        return redirect(url_for('editor.flujos_asignados'))
+
+    nuevo_estado = request.form.get('estado')
+    if nuevo_estado not in ['aprobado', 'rechazado']:
+        flash("⚠️ Estado inválido.", "warning")
+        return redirect(url_for('editor.flujos_asignados'))
+
+    # Actualizar estado del flujo
+    flow.status = nuevo_estado
+    flow.reviewed_at = datetime.utcnow()
+    db.session.commit()
+
+    # ✅ Crear notificación para el administrador o creador del proyecto
+    from app.models import SystemNotification
+
+    # Definir destinatario: el creador del proyecto
+    admin_id = flow.task.project.creator_id if flow.task and flow.task.project else None
+
+    if admin_id:
+        titulo = f"Flujo '{flow.name}' {nuevo_estado.capitalize()}"
+        mensaje = (
+            f"El editor {current_user.nombre} ha marcado como "
+            f"'{nuevo_estado}' la tarea '{flow.task.name}' del proyecto '{flow.task.project.name}'."
+        )
+
+        noti = SystemNotification(
+            title=titulo,
+            message=mensaje,
+            user_id=admin_id
+        )
+        db.session.add(noti)
+        db.session.commit()
+
+    flash(f"✅ Flujo '{flow.name}' marcado como {nuevo_estado}.", "success")
+    return redirect(url_for('editor.flujos_asignados'))
 
 
 
