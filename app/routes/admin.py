@@ -29,7 +29,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_bp.route('/')
 @login_required
 def admin_dashboard():
-    return redirect(url_for('admin.dashboard'))
+    return redirect(url_for('admin.dashboard_control'))
 
 # Ruta para ver los mensajes de contacto
 @admin_bp.route("/dashboard")
