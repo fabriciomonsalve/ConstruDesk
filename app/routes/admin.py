@@ -32,26 +32,6 @@ def admin_dashboard():
     return redirect(url_for('admin.dashboard_control'))
 
 
-# Ruta para marcar un mensaje como leído/no leído
-@admin_bp.route("/mensaje/<int:id>/toggle", methods=["POST"])
-@login_required
-def toggle_mensaje(id):
-    mensaje = ContactMessage.query.get_or_404(id)
-    mensaje.leido = not mensaje.leido
-    db.session.commit()
-    flash("📩 Estado de mensaje actualizado", "success")  
-    return redirect(url_for("admin.dashboard"))
-
-# Ruta para eliminar un mensaje
-@admin_bp.route("/mensaje/<int:id>/delete", methods=["POST"])
-@login_required
-def delete_mensaje(id):
-    mensaje = ContactMessage.query.get_or_404(id)
-    db.session.delete(mensaje)
-    db.session.commit()
-    flash("🗑️ Mensaje eliminado", "info")  
-    return redirect(url_for("admin.dashboard"))
-
 # Ruta para ver todos los usuarios
 @admin_bp.route('/usuarios')
 @login_required
