@@ -31,12 +31,6 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 def admin_dashboard():
     return redirect(url_for('admin.dashboard_control'))
 
-# Ruta para ver los mensajes de contacto
-@admin_bp.route("/dashboard")
-@login_required
-def dashboard():
-    mensajes = ContactMessage.query.order_by(ContactMessage.fecha.desc()).all()
-    return render_template("admin/inicio.html", mensajes=mensajes)
 
 # Ruta para marcar un mensaje como leído/no leído
 @admin_bp.route("/mensaje/<int:id>/toggle", methods=["POST"])

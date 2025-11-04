@@ -379,6 +379,18 @@
               </svg>
               Documentos y Planos
             </a>
+          {% elif current_user.has_role('mensajero') %}
+            <a href="{{ url_for('mensajero.dashboard') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                </svg>
+                Mensajes
+              </a>
           {% endif %}
         </div>
 
@@ -562,6 +574,18 @@
               </svg>
               Documentos y Planos
             </a>
+            {% elif current_user.has_role('mensajero') %}
+            <a href="{{ url_for('mensajero.dashboard') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                </svg>
+                Mensajes
+              </a>
             {% endif %}
           </div>
         </div>

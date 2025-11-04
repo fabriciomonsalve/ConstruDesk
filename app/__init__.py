@@ -31,6 +31,7 @@ def create_app():
     from app.routes.editor import editor_bp 
     from app.routes.miembro import miembro_bp 
     from app.routes.auth import auth_bp
+    from app.routes.mensajes import mensajero_bp    
 
 
 
@@ -42,6 +43,7 @@ def create_app():
     app.register_blueprint(editor_bp) 
     app.register_blueprint(miembro_bp)  
     app.register_blueprint(auth_bp)
+    app.register_blueprint(mensajero_bp)
     
 
 
