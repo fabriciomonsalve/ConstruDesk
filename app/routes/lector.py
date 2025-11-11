@@ -12,8 +12,12 @@ from werkzeug.utils import secure_filename
 # Crear blueprint para 'lector'
 lector_bp = Blueprint('lector', __name__, url_prefix='/lector')
 
-# Ruta de inicio para el lector
 @lector_bp.route('/')
+def inicio():
+    return redirect(url_for('lector.dashboard'))
+
+# Ruta de inicio para el lector
+@lector_bp.route('/documentos')
 def lector_documentos():
     projects = Project.query.all()  
     return render_template('lector/inicio.html', projects=projects)

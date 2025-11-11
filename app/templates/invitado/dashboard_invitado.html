@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[95%]">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10">
+      
+      {% if no_projects %}
+        <!-- Estado vacío mejorado -->
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-3">Aún no tienes proyectos asignados</h1>
+          <p class="text-gray-500 max-w-md mx-auto">
+            Cuando un administrador te asigne un proyecto, podrás visualizar su progreso y documentos aquí.
+          </p>
+        </div>
+        
+      {% else %}
+        <!-- Header Section -->
+        <div class="mb-8 pb-6 border-b border-gray-200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-3 bg-blue-600 rounded-xl">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+              </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900">Tus proyectos asignados</h1>
+          </div>
+          <p class="text-gray-600 ml-16">En esta sección podrás visualizar los proyectos que tienes asignados, junto con sus métricas y niveles de avance.</p>
+        </div>
+
+        <!-- Grid de proyectos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {% for p in proyectos_data %}
+          <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 group">
+            
+            <!-- Header Card -->
+            <div class="p-6 border-b border-gray-100">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{{ p.proyecto.name }}</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed line-clamp-2">
+                    {{ p.proyecto.description or 'Sin descripción' }}
+                  </p>
+                </div>
+                <div class="p-2 bg-gray-50 rounded-lg ml-3">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content Card -->
+            <div class="p-6">
+              <!-- Barra de progreso -->
+              <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm font-semibold text-gray-700">Avance del proyecto</span>
+                  <span class="text-sm font-bold text-blue-600">{{ p.progreso }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" 
+                       style="width: {{ p.progreso }}%"></div>
+                </div>
+              </div>
+
+              <!-- Métricas principales -->
+              <div class="grid grid-cols-3 gap-2 mb-5">
+                <!-- Completadas -->
+                <div class="bg-green-50 rounded-lg p-3 text-center border border-green-100">
+                  <p class="text-xs text-gray-600 mb-1">Completadas</p>
+                  <p class="text-lg font-bold text-green-600">{{ p.tareas_completadas }}</p>
+                </div>
+                
+                <!-- Pendientes -->
+                <div class="bg-amber-50 rounded-lg p-3 text-center border border-amber-100">
+                  <p class="text-xs text-gray-600 mb-1">Pendientes</p>
+                  <p class="text-lg font-bold text-amber-600">{{ p.tareas_pendientes }}</p>
+                </div>
+                
+                <!-- Documentos -->
+                <div class="bg-blue-50 rounded-lg p-3 text-center border border-blue-100">
+                  <p class="text-xs text-gray-600 mb-1">Documentos</p>
+                  <p class="text-lg font-bold text-blue-600">{{ p.documentos_total }}</p>
+                </div>
+              </div>
+
+              <!-- Última actualización minimalista -->
+              <div class="flex items-center gap-2 mb-5 pb-5 border-b border-gray-100">
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-xs text-gray-500">
+                  Último avance: <span class="font-medium text-gray-700">{{ p.ultimo_avance }}</span>
+                </p>
+              </div>
+
+              <!-- Botón de acción -->
+              <a href="{{ url_for('invitado.ver_proyecto', project_id=p.proyecto.id) }}" 
+                 class="inline-flex items-center justify-center gap-2 w-full bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                <span>Ver detalles</span>
+              </a>
+              
+            </div>
+
+          </div>
+          {% endfor %}
+          
+        </div>
+        
+      {% endif %}
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}

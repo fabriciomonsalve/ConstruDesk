@@ -368,7 +368,7 @@
               </svg>
               Dashboard de Proyectos
             </a>
-            <a href="{{ url_for('editor.editor_dashboard') }}" 
+            <a href="{{ url_for('lector.lector_documentos') }}" 
               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
                       hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
               <svg xmlns="http://www.w3.org/2000/svg"
@@ -379,6 +379,42 @@
               </svg>
               Documentos y Planos
             </a>
+          {% elif current_user.has_role('invitado') %}
+          <a href="{{ url_for('invitado.dashboard_invitado') }}" 
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                    hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 21V12h6v9" />
+            </svg>
+            Dashboard
+          </a>
+          <a href="{{ url_for('invitado.documentos_invitado') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Subida de Documentos
+            </a>
+            <a href="{{ url_for('invitado.listar_proyectos') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M3 17l6-6 4 4 8-8" />
+                </svg>
+                Registros de Avance
+              </a>
           {% elif current_user.has_role('mensajero') %}
             <a href="{{ url_for('mensajero.dashboard') }}" 
                 class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
@@ -563,7 +599,7 @@
               </svg>
               Dashboard de Proyectos
             </a>
-            <a href="{{ url_for('editor.editor_dashboard') }}" 
+            <a href="{{ url_for('lector.lector_documentos') }}" 
               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
                       hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
               <svg xmlns="http://www.w3.org/2000/svg"
@@ -574,6 +610,42 @@
               </svg>
               Documentos y Planos
             </a>
+            {% elif current_user.has_role('invitado') %}
+              <a href="{{ url_for('invitado.dashboard_invitado') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z" />
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 21V12h6v9" />
+                </svg>
+                Dashboard
+              </a>
+              <a href="{{ url_for('invitado.documentos_invitado') }}" 
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                      hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 7h4l2 2h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Subida de Documentos
+            </a>
+            <a href="{{ url_for('invitado.listar_proyectos') }}" 
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
+                        hover:text-white hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                    class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M3 17l6-6 4 4 8-8" />
+                </svg>
+                Registros de Avance
+              </a>
             {% elif current_user.has_role('mensajero') %}
             <a href="{{ url_for('mensajero.dashboard') }}" 
                 class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 
